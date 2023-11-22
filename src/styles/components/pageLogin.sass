@@ -1,0 +1,123 @@
+@use '../variables'
+    
+.container-main
+    display: flex
+
+.containerLogin
+    display: flex
+    flex-direction: column
+    height: 100vh
+    width: 53%
+    background-color: #fff
+    flex-wrap: nowrap
+
+.logo    
+    display: flex
+    height: 20vh
+    align-items: center
+    justify-content: center
+    width: 100%
+    font-size: 3em
+    margin-top: 30px
+    font-family: 'Cormorant Garamond', serif
+    margin-left: -20px
+    
+
+.title
+    font-family: variables.$font-title
+    font-size: 24px
+    text-align: center
+    margin-bottom: 30px
+
+.to-alr
+    font-size: 20px
+    font-family: 'Urbanist', sans-serif
+    font-weight: bold
+    text-align: center
+
+.fields-container-step2
+    display: flex
+    flex-wrap: wrap
+    justify-content: center
+    margin-top: 10%
+
+.section-login
+    border-radius: 20px
+    width: 90%
+    justify-content: center
+    padding: 10px
+    margin-top: 20%
+
+.fields
+    display: flex
+    justify-content: center
+    margin-bottom: 20px
+    ::-webkit-input-placeholder
+        text-align: center
+        font-family: 'Cabin', sans-serif
+    
+input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button 
+        -webkit-appearance: none
+        margin: 0
+
+.container-squares
+    width: 50%
+    height: 100vh
+    background-image: url('../../img/FrameSquares.png')
+    background-position: center
+    background-size: 60vh
+    background-repeat: no-repeat 
+
+
+.imgLogo
+    width: 120px
+    height: 100px
+
+.remember-me
+    display: flex
+    align-items: center
+    margin-left: 13vw
+    margin-top: -10px
+    margin-bottom: 10px
+    font-family: 'Cabinet', sans-serif
+
+    .form-check-input
+        border-color: black
+    .form-check-label
+        margin-top: 5px
+        font-size: 14px
+
+.login-finish-btn-field
+    display: flex
+    justify-content: center
+    margin-bottom: 20px
+
+    .login-btn
+        display: flex
+        align-items: center
+        justify-content: center
+        text-align: center
+        padding: 10px
+        border-radius: 10px
+        background-color: #a4a4e45c
+        width: 83%
+        height: 40px
+        color: #1C1C31
+        max-height: 40px
+        overflow: hidden
+        cursor: pointer
+        font-family: 'Cabin', sans-serif
+        &:hover
+            background-color: #9393ce5c
+    
+    // .btn-half
+    //     width: 22% !important
+    //     margin: 0 13px
+
+.label-input
+    margin-bottom: 5px
+
+.register-span
+    color: #5C5DE1
+    cursor: pointer

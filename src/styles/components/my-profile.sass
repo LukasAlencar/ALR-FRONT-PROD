@@ -1,0 +1,55 @@
+@use '../variables'
+
+.card-user
+    border-radius: 20px
+    overflow: hidden
+    height: 60%
+    background: #F8F9FA
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px
+
+.card-left-user
+    width: 20%
+    margin-left: 5%
+    display: flex
+    flex-direction: column
+    align-items: center
+
+.position-user
+    margin-top: 10px
+    font-size: 16px
+    color: gray
+.user-img
+    margin-top: 10px
+    display: flex
+    justify-content: center
+
+    .img-user-my-profile
+        transition: .5s
+        width: 90%
+        max-height: 300px
+
+        &:hover
+            border-radius: 10px !important
+
+.name-user
+    margin-top: 20px
+    font-family: 'Chakra Petch', sans-serif
+    font-weight: bold
+    max-width: 100%
+
+.email-user
+    color: gray
+    margin-top: 20px
+    font-family: variables.$font-primary
+    max-width: 100%
+    font-size: 14px
+
+.card-right-user
+    width: 50%
+    margin-left: -5%
+
+.section-list-user
+    flex: 7
+    display: flex
+    justify-content: space-evenly
+    align-items: center
