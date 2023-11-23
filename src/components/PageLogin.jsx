@@ -85,6 +85,7 @@ const PageLogin = () => {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
             >
+
                 <div className='containerLogin row'>
                     <div className='logo'>
                         <img className='imgLogo' src={Logo} alt="ALR" />

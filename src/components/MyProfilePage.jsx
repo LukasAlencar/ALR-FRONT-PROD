@@ -16,7 +16,7 @@ import createAxiosInstance from '../settings/AxiosSettings'
 
 function MyProfilePage() {
   const { actualUser, token, getApi } = useContext(Context)
-  const apiALR = createAxiosInstance(token)
+  const apiALR = createAxiosInstance(actualUser.key)
 
   const calcFontSize = () => {
     const fontSize = Math.max(15, Math.min(25, 35 - actualUser.name.length));
