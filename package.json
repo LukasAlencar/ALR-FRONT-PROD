@@ -1,11 +1,9 @@
 {
-  "install": "npm install --legacy-peer-deps",
   "name": "alr-front",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "postinstall": "--legacy-peer-deps",
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
