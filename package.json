@@ -1,4 +1,5 @@
 {
+  "install": "npm install --legacy-peer-deps",
   "name": "alr-front",
   "private": true,
   "version": "0.0.0",
