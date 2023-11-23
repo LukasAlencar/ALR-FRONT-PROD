@@ -13,6 +13,7 @@
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@fontsource/roboto": "^5.0.8",
+    "@material-ui/core": "^4.12.4",
     "@mui/icons-material": "^5.14.14",
     "@mui/material": "^5.14.14",
     "@mui/styled-engine-sc": "^6.0.0-alpha.2",
@@ -39,11 +40,6 @@
     "sass": "^1.67.0",
     "styled-components": "^6.1.1",
     "uuid": "^9.0.1"
-  },
-  "overrides": {
-    "react-lottie": {
-      "react": "^0.14.7 || ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0"
-    }
   },
   "devDependencies": {
     "@types/react": "^18.0.37",
