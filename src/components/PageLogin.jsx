@@ -47,7 +47,6 @@ const PageLogin = () => {
             .then((res) => {
                 setIsAuth(true)
                 const userLogged = jwtDecode(res.data.token)
-                debugger
                 const decodedToken = userLogged.key
                 localStorage.setItem('token', decodedToken)
                 getApi()

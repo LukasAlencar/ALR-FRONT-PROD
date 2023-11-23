@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
 import Navbar from '../Navbar'
-import Footer from '../Footer'
 import LeftMenu from '../LeftMenu'
 // COMPONENTS { Table }
 
@@ -26,10 +25,7 @@ import ModalPattern from '../ModalPattern'
 //
 
 import '../../styles/components/user-list.sass'
-import axios from 'axios';
 
-import { v4 as uuidv4 } from 'uuid';
-import apiALR from '../../settings/AxiosSettings';
 import createAxiosInstance from '../../settings/AxiosSettings';
 import { Context } from '../../context/AuthContext';
 
@@ -48,8 +44,7 @@ import { Context } from '../../context/AuthContext';
 const UsersList = () => {
 
   const { token, actualUser } = useContext(Context)
-  const userLogged = localStorage.getItem('email')
-  const apiALR = createAxiosInstance(token)
+  const apiALR = createAxiosInstance(actualUser.key)
 
   const [modal, setModal] = useState({
     isShow: false,
@@ -59,9 +54,7 @@ const UsersList = () => {
 
   useEffect(() => {
     async function getUsers() {
-      // const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTMsImVtYWlsIjoiZ29rdUBlbWFpbC5jb20ifQ.TKUbZ_zcP8clNYDJnk7qfeF1MG3p4Az8VT6W26_AZbQ'
       try {
-        // await axios.post('https://api.alrtcc.com/verify_token/', token)
         setIsLoading(true)
         const res = await apiALR.get('/users/');
         setRows(res.data)

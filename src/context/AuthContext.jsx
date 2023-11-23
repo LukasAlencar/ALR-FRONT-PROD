@@ -16,7 +16,7 @@ export const AuthProvider = ({ children }) => {
     const navigate = useNavigate()
 
 
-    const handleActualUser = (name, email, img_user, enterprise, status, cargo, id) =>{
+    const handleActualUser = (name, email, img_user, enterprise, status, cargo, id, key) =>{
         setActualUser({
             name,
             email,
@@ -25,12 +25,13 @@ export const AuthProvider = ({ children }) => {
             status,
             cargo,
             id,
+            key,
         })
     }
 
     const getApi = async () =>{
         setIsLoading(true)
-        let token = localStorage.getItem('token')
+        const token = localStorage.getItem('token')
         let formData = new FormData()
         formData.append('token', token)
 
@@ -43,10 +44,11 @@ export const AuthProvider = ({ children }) => {
             let status = res.data.data.user.status;
             let cargo = res.data.data.user.cargo;
             let id = res.data.data.user.id;
+            
 
             setIsAuth(true)
 
-            handleActualUser(name, email, img_user, enterprise, status, cargo, id)
+            handleActualUser(name, email, img_user, enterprise, status, cargo, id, token)
             localStorage.setItem('userName', name)
             localStorage.setItem('email', email)
             localStorage.setItem('userImg', img_user)
