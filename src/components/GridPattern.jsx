@@ -10,7 +10,7 @@ import React, { useEffect, useState } from 'react'
 import RowCustom from './RowCustom';
 import RowCustomPattern from './RowCustomPattern';
 
-const GridPattern = ({ component, listHeaderItems, addRows, listBodyItems, handleRemoveRow, handleEdit }) => {
+const GridPattern = ({ component, listHeaderItems, addRows, listBodyItems, handleRemoveRow, handleEdit, downloadIcon, downloadFunction, canEdit }) => {
     const [newRow, SetNewRow] = useState({})
     const values = []
 
@@ -29,7 +29,6 @@ const GridPattern = ({ component, listHeaderItems, addRows, listBodyItems, handl
     }, {});
 
     const [state, setState] = useState(initialState);
-
 
     useEffect(() => {
         const updatedState = listHeaderItems.reduce((acc, obj) => {
@@ -80,7 +79,7 @@ const GridPattern = ({ component, listHeaderItems, addRows, listBodyItems, handl
                                         <TableCell align={item.align}>{itemUpper}</TableCell>
                                     )
                                 })}
-                                <TableCell align={'center'}>Actions</TableCell>
+                                {canEdit && <TableCell align={'center'}>Actions</TableCell>}
 
                             </TableRow>
 
@@ -127,13 +126,15 @@ const GridPattern = ({ component, listHeaderItems, addRows, listBodyItems, handl
                                     <>
                                         {listBodyItems.slice().reverse()?.map((item, index) => (
                                             <RowCustomPattern
+                                                downloadIcon={downloadIcon}
+                                                downloadFunction={downloadFunction}
                                                 item={item}
                                                 index={index}
                                                 listBodyItems={listBodyItems}
                                                 listHeaderItems={listHeaderItems}
                                                 handleEdit={handleEdit}
                                                 handleRemoveRow={handleRemoveRow}
-                                                canEdit={true}
+                                                canEdit={canEdit}
                                             />
                                         ))}
                                     </>

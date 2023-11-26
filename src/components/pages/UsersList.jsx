@@ -110,8 +110,9 @@ const UsersList = () => {
         setIsLoading(false)
       })
 
-    const res = await apiALR.get('https://api.alrtcc.com/users/?format=json');
-    setRows(res.data)
+    await apiALR.get('https://api.alrtcc.com/users/')
+    .then(res => setRows(res.data))
+    .catch((error) => console.log(error))
   }
 
   const handleFileChange = async (e) => {

@@ -5,6 +5,7 @@ import  createAxiosInstance  from '../settings/AxiosSettings'
 export const Context = createContext()
 
 export const AuthProvider = ({ children }) => {
+    const [dialogAdmin, setDialogAdmin] = useState(false);
     const [isAuth, setIsAuth] = useState(false)
     const [loading, setIsLoading] = useState(true)
     const [token, setToken] = useState('')
@@ -54,6 +55,7 @@ export const AuthProvider = ({ children }) => {
             localStorage.setItem('userImg', img_user)
 
             if(window.location.pathname == '/'){
+                debugger
                 navigate('/home')
             }
         
@@ -62,6 +64,9 @@ export const AuthProvider = ({ children }) => {
     }
 
     useEffect(() => {
+        if(!navigator.onLine){
+            alert("You don't have connection established")
+        }
         const auxToken = localStorage.getItem('token');
         setToken(auxToken)
         getApi(auxToken)
@@ -87,7 +92,7 @@ export const AuthProvider = ({ children }) => {
         return <div>Carregando</div>
     }else{
         return (
-            <Context.Provider value={{ isAuth, setIsAuth, token, userLogged, setUserLogged, actualUser, setActualUser, getApi}}>
+            <Context.Provider value={{ isAuth, setIsAuth, token, userLogged, setUserLogged, actualUser, setActualUser, getApi, dialogAdmin, setDialogAdmin}}>
                 {children}
             </Context.Provider>
         )

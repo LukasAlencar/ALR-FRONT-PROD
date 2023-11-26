@@ -1,6 +1,6 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import '../../../styles/components/change-password-dynamic.sass'
 import Logo from '../../../img/logo.png'
 import { useForm } from 'react-hook-form'
@@ -10,6 +10,7 @@ import ModalPattern from '../../ModalPattern'
 
 
 const ChangePasswordDynamic = () => {
+    const { state } = useLocation()
     const { token } = useParams()
     const [user, setUser] = useState()
     const navigate = useNavigate()
@@ -21,8 +22,8 @@ const ChangePasswordDynamic = () => {
         textTitle: '',
         textBody: '',
         textBtn1: '',
-        toggleModal: () => {},
-        handleClick1: () => {},
+        toggleModal: () => { },
+        handleClick1: () => { },
     })
 
     const watchPassword = watch("new_password")
@@ -39,21 +40,19 @@ const ChangePasswordDynamic = () => {
         let formData = new FormData();
         formData.append('password', data.new_password)
         formData.append('status', true)
-        console.log(user)
-        debugger
         await axios.put(`https://api.alrtcc.com/user/${user.id}/`, formData,
             { headers: { 'Authorization': 'Token ' + user.key } })
             .then(() => {
                 debugger
-                setModal((prev) => ({ ...prev, isShow: true, textTitle: 'Success!', textBody: "Your password has been change.", textBtn1: 'Login', handleClick1: () => {closeModalToLogin()}, toggleModal: () => {closeModalToLogin()}}))
+                setModal((prev) => ({ ...prev, isShow: true, textTitle: 'Success!', textBody: "Your password has been change.", textBtn1: 'Login', handleClick1: () => { closeModalToLogin() }, toggleModal: () => { closeModalToLogin() } }))
             })
             .catch(() => {
-                setModal((prev) => ({ ...prev, isShow: true, textTitle: 'Error!', textBody: "Unable to change your password, contact your company support!", textBtn1: 'Ok', handleClick1: () => setModal((prev) => ({ ...prev, isShow: false })), toggleModal: () => setModal((prev) => ({ ...prev, isShow: false }))}))
+                setModal((prev) => ({ ...prev, isShow: true, textTitle: <span className='error'>Error!</span>, textBody: "Unable to change your password, contact your company support!", textBtn1: 'Ok', handleClick1: () => setModal((prev) => ({ ...prev, isShow: false })), toggleModal: () => setModal((prev) => ({ ...prev, isShow: false })) }))
             })
     }
 
     const closeModalToLogin = () => {
-        setModal((prev) => ({...prev, isShow: false}))
+        setModal((prev) => ({ ...prev, isShow: false }))
         navigate('/')
     }
     return (

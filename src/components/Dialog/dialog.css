@@ -1,0 +1,26 @@
+.body-dialog{
+    max-width: 40%;
+    min-width: 200px;
+    max-height: 8%;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    z-index: 999;
+}
+
+.check{
+    background: rgba(0, 255, 76, 0.7);
+}
+
+@keyframes out {
+    0%{
+        left: 10px;
+    }
+    100%{
+        left: -30%;
+    }
+}

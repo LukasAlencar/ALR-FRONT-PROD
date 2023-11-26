@@ -8,15 +8,11 @@ import { AnimatePresence, motion, useAnimate } from 'framer-motion'
 import AlertTop from './AlertTop'
 import InputMask from 'react-input-mask'
 import ModalPattern from './ModalPattern'
+import CircularProgress from '@mui/material/CircularProgress';
+
 
 
 const PageRegister = () => {
-    const [name, setName] = useState('')
-    const [enterprise, setEnterprise] = useState('')
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [profileImage, setProfileImage] = useState(null)
-    const [isLoading, setIsLoading] = useState(false)
 
     const navigate = useNavigate()
 
@@ -25,6 +21,9 @@ const PageRegister = () => {
         textTitle: '',
         textBody: '',
     })
+
+    const [isLoading, setIsLoading] = useState(false)
+
 
     const [user, setUser] = useState(
         {
@@ -61,8 +60,8 @@ const PageRegister = () => {
 
     const handleName = (e) => {
         let val = e.target.value
-        setUser((prev) => ({ ...prev, name: val}))
-        
+        setUser((prev) => ({ ...prev, name: val }))
+
         if (val == '') {
             setTestValidate({ ...testValidate, name: false })
         } else {
@@ -73,7 +72,7 @@ const PageRegister = () => {
     const handleEmail = (e) => {
         let patternEmail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
         let val = e.target.value
-        setUser((prev) => ({ ...prev, email: val}))
+        setUser((prev) => ({ ...prev, email: val }))
 
         if (!patternEmail.test(val)) {
             setTestValidate({ ...testValidate, email: false })
@@ -86,18 +85,18 @@ const PageRegister = () => {
         let val = e.target.value
         let patternCNPJ = /^\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2}$/
 
-        setUser((prev) => ({...prev, cnpj: val}))
-        if(!patternCNPJ.test(val)) {
+        setUser((prev) => ({ ...prev, cnpj: val }))
+        if (!patternCNPJ.test(val)) {
             setTestValidate({ ...testValidate, cnpj: false })
-        }else{
+        } else {
             setTestValidate({ ...testValidate, cnpj: true })
         }
-        
+
     }
 
     const handleEnterprise = (e) => {
         let val = e.target.value
-        setUser((prev) => ({ ...prev, enterpriseName: val}))
+        setUser((prev) => ({ ...prev, enterpriseName: val }))
 
         if (!val) {
             setTestValidate({ ...testValidate, enterprise: false })
@@ -109,8 +108,8 @@ const PageRegister = () => {
         let patternUpperCase = /[A-Z]/
         let patternSpecialChars = /[^a-zA-Z0-9]+/g
         let val = e.target.value
-        setUser((prev) => ({ ...prev, password: val}))
-        
+        setUser((prev) => ({ ...prev, password: val }))
+
         if (val.length >= 8 && patternUpperCase.test(val) && patternSpecialChars.test(val)) {
             setTestValidate({ ...testValidate, password: true })
         } else {
@@ -122,13 +121,9 @@ const PageRegister = () => {
         setIsAlert(false)
     }
 
-    const handleProfileImage = (e) => {
-        setProfileImage(e)
-    }
-
     const handleRegister = async () => {
-
-        if(Object.values(testValidate).every(value => value === true)){
+        setIsLoading(true)
+        if (Object.values(testValidate).every(value => value === true)) {
             let formdata = new FormData();
             let cnpj_formated = user.cnpj.replace(/\D/g, '');
             formdata.append('username', user.name);
@@ -140,13 +135,21 @@ const PageRegister = () => {
 
             await axios.post('https://api.alrtcc.com/create_enterprise/', formdata).then(() => {
                 navigate('/home');
-            }).catch((err) => setModal((prev) => ({ ...prev, isShow: true, textTitle: 'Error!', textBody: 'Register Error!' })));
+            }).catch((err) => setModal((prev) => ({ ...prev, isShow: true, textTitle: <span className='error'>Error!</span>, textBody: 'Register Error!' })))
+            .finally(()=>{
+                setIsLoading(false)
+            })
         }
-        
+
     }
 
     return (
         <>
+            {isLoading && <>
+                <div className='mask' />
+                <CircularProgress className='progress-rol' />
+            </>
+            }
             <ModalPattern
                 toggleModal={() => setModal((prev) => ({ ...prev, isShow: false }))}
                 open={modal.isShow}
@@ -174,7 +177,6 @@ const PageRegister = () => {
                             animate={{ opacity: 1, display: 'block' }}
                             exit={{ opacity: 0, display: 'none' }}
                             className="fields-container">
-
                             <div className="fields row">
                                 <div className="col-6">
                                     <label htmlFor="formFile" className="form-label">Profile Image</label>

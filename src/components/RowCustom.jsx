@@ -54,28 +54,36 @@ const RowCustom = ({ datas, handleRemoveLicense, setIsLoading, setLicensesList, 
     const handleSaveLicense = async () => {
         setIsLoading(true);
 
-        const formData = new FormData()
-        formData.append('name', listAdd.product)
-        formData.append('status', listAdd.status)
-        formData.append('start_date', listAdd.activateDate)
-        formData.append('end_date', listAdd.expirationDate)
+        if (listAdd.product && listAdd.activateDate && listAdd.expirationDate && listAdd.product) {
 
-        if (listAdd.contract) {
-            formData.append('file', listAdd.contract)
+            if (listAdd.activateDate > listAdd.expirationDate) {
+                setModal((prev) => ({ ...prev, isShow: true, textTitle: <span className='error'>Error!</span>, textBody: <>The <span style={{ fontWeight: 'bold' }}>Activate Date</span> cannot be later than the <span style={{ fontWeight: 'bold' }}>Expirate Date.</span></> }))
+                return false
+            }
+            const formData = new FormData()
+            formData.append('name', listAdd.product)
+            formData.append('status', listAdd.status)
+            formData.append('start_date', listAdd.activateDate)
+            formData.append('end_date', listAdd.expirationDate)
+
+            if (listAdd.contract) {
+                formData.append('file', listAdd.contract)
+            }
+
+            await axios.put(`https://api.alrtcc.com/contract/${datas.id}/`, formData)
+                .then(() => {
+                    setModal((prev) => ({ ...prev, isShow: true, textTitle: 'Success!', textBody: 'Contract edited successfully!' }))
+                    setIsEdit(false)
+                })
+                .catch(() => setModal((prev) => ({ ...prev, isShow: true, textTitle: <span className='error'>Error!</span>, textBody: 'Contract not edited!' })))
+                .finally(() => {
+                    setIsLoading(false);
+                })
+
+            getApi()
+        } else {
+
         }
-
-        await axios.put(`https://api.alrtcc.com/contract/${datas.id}/`, formData)
-            .then(() => {
-                setModal((prev) => ({ ...prev, isShow: true, textTitle: 'Success!', textBody: 'Contract edited successfully!' }))
-                setIsEdit(false)
-            })
-            .catch(() => setModal((prev) => ({ ...prev, isShow: true, textTitle: 'Error!', textBody: 'Contract not edited!' })))
-            .finally(() => {
-                setIsLoading(false);
-            })
-
-        getApi()
-
     }
 
     useEffect(() => {

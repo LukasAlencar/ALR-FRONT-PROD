@@ -30,6 +30,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import RowCustom from './RowCustom';
 import ModalPattern from './ModalPattern';
 
+
 const downloadContract = (file) => {
     const a = document.createElement('a');
     a.href = file;
@@ -42,6 +43,9 @@ const downloadContract = (file) => {
 
 const GridComponent = () => {
     const [isLoading, setIsLoading] = useState(false)
+    const [loadingProducts, setLoadingProducts] = useState(true)
+    const [products, setProducts] = useState([])
+
     const [licensesList, setLicensesList] = useState(
         [{
             name: 'default',
@@ -70,12 +74,25 @@ const GridComponent = () => {
 
     useEffect(() => {
         getApi();
+        (async () => {
+            await axios.get('https://api.alrtcc.com/products/').then(res => {
+                setProducts(res.data)
+            })
+                .catch(err => console.log(err))
+                .finally(() => {
+                    setLoadingProducts(false)
+                })
+        })()
     }, [])
 
     const handleAddLicense = async () => {
-        setIsLoading(true);
-
+        
         if (listAdd.product && listAdd.activateDate && listAdd.expirationDate && listAdd.product) {
+            if(listAdd.activateDate > listAdd.expirationDate) {
+                setModal((prev) => ({ ...prev, isShow: true, textTitle: <span className='error'>Error!</span>, textBody: <>The <span style={{fontWeight: 'bold'}}>Activate Date</span> cannot be later than the <span style={{fontWeight: 'bold'}}>Expirate Date.</span></>}))
+                return false
+            }
+            setIsLoading(true);
             const formData = new FormData()
             formData.append('name', listAdd.product)
             formData.append('file', listAdd.contract)
@@ -89,14 +106,14 @@ const GridComponent = () => {
                 .then(() => {
                     setModal((prev) => ({ ...prev, isShow: true, textTitle: 'Success!', textBody: 'Contract added successfully!' }))
                 })
-                .catch(() => setModal((prev) => ({ ...prev, isShow: true, textTitle: 'Error!', textBody: 'Contract not added!' })))
+                .catch(() => setModal((prev) => ({ ...prev, isShow: true, textTitle: <span className='error'>Error!</span>, textBody: 'Contract not added!' })))
                 .finally(() => {
                     setIsLoading(false);
                 })
             getApi()
             return;
         }else{
-            setModal((prev) => ({ ...prev, isShow: true, textTitle: 'Error!', textBody: 'Fields Empty!' }))
+            setModal((prev) => ({ ...prev, isShow: true, textTitle: <span className='error'>Error!</span>, textBody: 'Fields Empty!' }))
         }
         setIsLoading(false);
     }
@@ -144,30 +161,13 @@ const GridComponent = () => {
         setIsLoading(true)
         await axios.delete(`https://api.alrtcc.com/contract/${uuid}`)
             .then(()=> setModal((prev) => ({ ...prev, isShow: true, textTitle: 'Success!', textBody: 'Contract removed successfully!' })))
-            .catch(() => setModal((prev) => ({ ...prev, isShow: true, textTitle: 'Error!', textBody: 'Contract not removed!'})))
+            .catch(() => setModal((prev) => ({ ...prev, isShow: true, textTitle: <span className='error'>Error!</span>, textBody: 'Contract not removed!'})))
             .finally(() => {
                 setIsLoading(false);
             })
 
         getApi();
     }
-
-    const products = [
-        { productName: 'Photoshop 2008' },
-        { productName: 'Photoshop 2010' },
-        { productName: 'Photoshop 2012' },
-        { productName: 'Photoshop 2016' },
-        { productName: 'Photoshop 2020' },
-        { productName: 'Photoshop CS6' },
-        { productName: 'Photoshop CC' },
-        { productName: 'VCenter' },
-        { productName: 'VSphere' },
-        { productName: 'VMware Workstation' },
-        { productName: 'Windows 7' },
-        { productName: 'Windows 8' },
-        { productName: 'Windows 10' },
-        { productName: 'Windows 11' },
-    ]
 
     return (
         <>
@@ -204,8 +204,10 @@ const GridComponent = () => {
                             <TableCell>
                                 <select value={listAdd.product} onChange={handleChange} name='product' className='form-select text-center' >
                                     <option disabled value="default">Select Product</option>
+                                    {loadingProducts && <option disabled value="default">Loading...</option>}
+
                                     {products?.map((product) => {
-                                        return <option value={product.productName}>{product.productName}</option>
+                                            return <option key={product.id} value={product.id}>{product.name}</option>
                                     })}
                                 </select>
                             </TableCell>

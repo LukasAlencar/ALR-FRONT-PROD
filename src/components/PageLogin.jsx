@@ -1,47 +1,49 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useState } from 'react'
 import Logo from '../img/logo.png'
 import '../styles/components/pageLogin.sass'
 import { useNavigate } from 'react-router-dom'
-import { AiOutlineArrowLeft } from 'react-icons/ai'
 import { jwtDecode } from "jwt-decode";
 import { AnimatePresence, motion } from 'framer-motion'
 
-import Loader from './Loader'
-import AlertTop from './AlertTop'
 import axios from 'axios'
 
 import CircularProgress from '@mui/material/CircularProgress';
 import { Context } from '../context/AuthContext'
 
 import ModalPattern from './ModalPattern'
+import { useForm } from 'react-hook-form';
+import Dialog from './Dialog/Dialog';
 
 const PageLogin = () => {
 
-    const { isAuth, setIsAuth, setUserLogged, setActualUser, getApi } = useContext(Context)
+    const { register, formState: { errors }, handleSubmit } = useForm()
+
+    const { setIsAuth, getApi, actualUser, setDialogAdmin } = useContext(Context)
 
     const [isLoading, setIsLoading] = useState(false)
 
     const [modal, setModal] = useState(false)
 
+
+
     const navigate = useNavigate();
 
-    const [data, setData] = useState({
-        email: '',
-        password: '',
-    })
+    // const [data, setData] = useState({
+    //     email: '',
+    //     password: '',
+    // })
 
-    const handleEmail = (val) => {
-        setData({ ...data, email: val })
-    }
-    const handlePassword = (val) => {
-        setData({ ...data, password: val })
-    }
+    // const handleEmail = (val) => {
+    //     setData({ ...data, email: val })
+    // }
+    // const handlePassword = (val) => {
+    //     setData({ ...data, password: val })
+    // }
 
-    const handleLogin = async () => {
+    const handleLogin = async (data) => {
         setIsLoading(true)
         const formData = new FormData()
-        debugger
-        formData.append('email', data.email)
+        formData.append('email', data.email.trim())
         formData.append('password', data.password)
         await axios.post('https://api.alrtcc.com/login/', formData)
             .then((res) => {
@@ -51,29 +53,32 @@ const PageLogin = () => {
                 localStorage.setItem('token', decodedToken)
                 getApi()
                 localStorage.setItem('email', userLogged.email)
-                navigate('/home')
+                setDialogAdmin(actualUser.cargo == "Administrador" ? true : false)
+                navigate('/home')                
             })
-            .catch(()=>{setModal(true)})
+            .catch(() => { setModal(true) })
             .finally(() => { setIsLoading(false) });
 
     }
+
 
     const handleRegister = () => {
         navigate('/register')
     }
 
-    const toggleModal = () =>{
+    const toggleModal = () => {
         setModal(!modal)
+        
     }
     return (
         <>
-            <ModalPattern 
-                toggleModal={()=>setModal(!modal)}
-                open={modal} 
+            <ModalPattern
+                toggleModal={() => setModal(!modal)}
+                open={modal}
                 textTitle={'User not Found'}
                 textBody={'Try Again'}
                 textBtn1={'Ok'}
-                handleClick1={()=>setModal(false)}
+                handleClick1={() => setModal(false)}
             />
             {isLoading && <>
                 <div className='mask' />
@@ -104,34 +109,51 @@ const PageLogin = () => {
                                         <span></span>
                                     </div>
                                 </div>
-                                <div className="fields row">
-                                    <div className="col-10">
-                                        <label className='label-input' htmlFor="licenseName">Email</label>
-                                        <input value={data.email} onChange={e => handleEmail(e.target.value)} type="text" className={"form-control"} placeholder='your@email.com' id="email" aria-describedby="licenseName" />
+                                <form action="">
+                                    <div className="fields row">
+                                        <div className="col-10">
+                                            <label className='label-input' htmlFor="licenseName">Email</label>
+                                            <input
+                                                type="text"
+                                                className={`form-control mb-1 ${errors?.email && 'error'}`}
+                                                placeholder='your@email.com'
+                                                id="email"
+                                                aria-describedby="licenseName"
+                                                {...register("email", { required: true })}
+                                            />
+                                            {errors?.email?.type === "required" && <span className='error'>Required *</span>}
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="fields row">
-                                    <div className="col-10">
-                                        <label className='label-input' htmlFor="licenseName">Password</label>
-                                        <input value={data.password} onChange={e => handlePassword(e.target.value)} type="password" className={"form-control"} placeholder='*******' id="password" aria-describedby="licenseName" />
+                                    <div className="fields row">
+                                        <div className="col-10">
+                                            <label className='label-input' htmlFor="licenseName">Password</label>
+                                            <input
+                                                type="password"
+                                                className={`form-control mb-1 ${errors?.password && 'error'}`}
+                                                placeholder='*******'
+                                                id="password"
+                                                aria-describedby="licenseName"
+                                                {...register("password", { required: true })}
+                                            />
+                                            {errors?.password?.type === "required" && <span className='error'>Required *</span>}
+                                        </div>
                                     </div>
-                                </div>
-                                <div style={{ flex: 1, marginTop: 20 }}>
-                                    <div className="login-finish-btn-field">
-                                        <div onClick={handleLogin} className='login-btn'> Login </div>
-                                        {/* <div className="next-step-btn"><CgPlayTrackNextR/></div> */}
+                                    <div style={{ flex: 1, marginTop: 20 }}>
+                                        <div className="login-finish-btn-field">
+                                            <button type='submit' onClick={handleSubmit(handleLogin)} className='login-btn'> Login </button>
+                                            {/* <div className="next-step-btn"><CgPlayTrackNextR/></div> */}
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="fields row">
-                                    <div className="col-10">Don´t have an account? <span onClick={handleRegister} className='register-span'>Register</span></div>
-                                </div>
-
+                                    <div className="fields row">
+                                        <div className="col-10">Don´t have an account? <span onClick={handleRegister} className='register-span'>Register</span></div>
+                                    </div>
+                                </form>
                             </div>
                         </motion.div>
                     </AnimatePresence>
                 </div>
                 <div className="container-squares" />
-            </motion.div>
+            </motion.div >
         </>
     )
 }

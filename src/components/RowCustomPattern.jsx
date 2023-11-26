@@ -1,12 +1,13 @@
 import { TableCell, TableRow } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { LiaFileContractSolid } from 'react-icons/lia'
+import { MdOutlineFileDownload } from "react-icons/md";
 import TrashIcon from './TrashIcon'
 import axios from 'axios'
 import { AiOutlineCheck } from 'react-icons/ai'
 import { HiXMark, HiOutlinePencilSquare } from 'react-icons/hi2'
 
-const RowCustomPattern = ({ item, index, handleEdit, canEdit, listHeaderItems, handleRemoveRow }) => {
+const RowCustomPattern = ({ item, index, handleEdit, canEdit, listHeaderItems, handleRemoveRow, downloadFunction }) => {
 
     const [newRow, SetNewRow] = useState({})
 
@@ -58,6 +59,9 @@ const RowCustomPattern = ({ item, index, handleEdit, canEdit, listHeaderItems, h
         }));
     };
 
+    const download = (data) => {
+        downloadFunction(data)
+    }
 
     const initialDynamicState = {};
 
@@ -81,7 +85,7 @@ const RowCustomPattern = ({ item, index, handleEdit, canEdit, listHeaderItems, h
         }
     }, [item]);
 
-    const handleCallEdit = () =>{
+    const handleCallEdit = () => {
         setIsEdit(false)
         handleEdit(state)
     }
@@ -134,24 +138,34 @@ const RowCustomPattern = ({ item, index, handleEdit, canEdit, listHeaderItems, h
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                 >
                     {listHeaderItems.map((subItem, indexHeader) => {
-                        return (
-                            <TableCell key={indexHeader} align="center">{item[subItem.itemName]}</TableCell>
-                        )
+                        if (subItem.downloadIcon) {
+                            return (
+                                <TableCell key={indexHeader} align="center">
+                                    <MdOutlineFileDownload
+                                        className='link'
+                                        fontSize={20}
+                                        onClick={() => download(item[subItem.itemName])}
+                                    />
+
+                                </TableCell>
+                            )
+                        } else {
+
+                            return (
+                                <TableCell key={indexHeader} align="center">{item[subItem.itemName]}</TableCell>
+                            )
+                        }
                     })}
-                    <TableCell>
-                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                            {canEdit ?
+                    {canEdit &&
+                        <TableCell>
+                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                                 <>
                                     <HiOutlinePencilSquare className='pencil' onClick={() => handleToggleEdit(true)} />
                                     <TrashIcon width={20} mt={0} uuid={item.id} handleClick={() => handleRemoveRow(item.id)} />
                                 </>
-                                :
-                                <>
-                                    --
-                                </>
-                            }
-                        </div>
-                    </TableCell>
+                            </div>
+                        </TableCell>
+                    }
 
                 </TableRow>
             </>
