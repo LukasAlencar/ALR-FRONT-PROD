@@ -78,6 +78,7 @@ const UsersList = () => {
       name: '',
       email: '',
       img_user: 'https://fakeimg.pl/300/',
+      position: '',
     }
   )
 
@@ -94,26 +95,32 @@ const UsersList = () => {
   }
 
   const handleAddUser = async () => {
-    setIsLoading(true)
-    let passAleatorio = generateRandomString(10)
-    const formData = new FormData();
-    formData.append('name', user.name)
-    formData.append('email', user.email)
-    formData.append('img_user', user.img_user)
-    formData.append('password', passAleatorio)
-    formData.append('cargo', 'Colaborador')
-    formData.append('enterprise', parseInt(actualUser.enterprise))
 
-    await apiALR.post('https://api.alrtcc.com/register/', formData)
-      .then(res => console.log(res))
-      .catch((err) => console.log(err))
-      .finally(() => {
-        setIsLoading(false)
-      })
+    if (user.name && user.email && user.img_user && user.position) {
 
-    await apiALR.get(`https://api.alrtcc.com/users/${actualUser.enterprise}/`)
-    .then(res => setRows(res.data))
-    .catch((error) => console.log(error))
+      setIsLoading(true)
+      let passAleatorio = generateRandomString(10)
+      const formData = new FormData();
+      formData.append('name', user.name)
+      formData.append('email', user.email)
+      formData.append('img_user', user.img_user)
+      formData.append('password', passAleatorio)
+      formData.append('cargo', user.position)
+      formData.append('enterprise', parseInt(actualUser.enterprise))
+
+      await apiALR.post('https://api.alrtcc.com/register/', formData)
+        .then(res => console.log(res))
+        .catch((err) => console.log(err))
+        .finally(() => {
+          setIsLoading(false)
+        })
+
+      await apiALR.get(`https://api.alrtcc.com/users/${actualUser.enterprise}/`)
+        .then(res => setRows(res.data))
+        .catch((error) => console.log(error))
+    }else{
+      setModal((prev) => ({ ...prev, isShow: true, textTitle: 'Error!', textBody: 'Empty Fields!' }))
+    }
   }
 
   const handleFileChange = async (e) => {
@@ -174,6 +181,7 @@ const UsersList = () => {
                 <TableCell align="center">Image</TableCell>
                 <TableCell align="center">Name</TableCell>
                 <TableCell align="center">E-mail</TableCell>
+                <TableCell align="center">Position</TableCell>
                 <TableCell align="center">Status</TableCell>
                 {actualUser.cargo == 'Administrador' && <TableCell align="center">Actions</TableCell>}
 
@@ -189,12 +197,18 @@ const UsersList = () => {
                   <TableCell align="center"><input onChange={handleFileChange} type="file" accept='image/jpeg, image/png' className='form-control' /></TableCell>
                   <TableCell><input maxLength={22} value={user.name} onChange={handleChange} name='name' className='form-control text-center' type="text" /></TableCell>
                   <TableCell align="center"><input onChange={handleChange} value={user.email} name='email' className='form-control text-center' type="text" /></TableCell>
+                  <TableCell align="center">
+                    <select onChange={handleChange} value={user.position} className='form-select' name="position" id="position">
+                      <option value="default">Select a Position</option>
+                      <option value="Colaborador">Collaborator</option>
+                      <option value="Administrador">Administrator</option>
+                    </select>
+                  </TableCell>
                   <TableCell align="center">--</TableCell>
                   <TableCell align="center"><button onClick={handleAddUser} className='btn btn-primary'>Add +</button></TableCell>
                 </TableRow>}
 
               {rows.slice().reverse()?.map((row) => {
-
                 return (
                   <TableRow
                     key={row.id}
@@ -206,10 +220,11 @@ const UsersList = () => {
                     </TableCell>
 
                     <TableCell align="center">{row.email}</TableCell>
+                    <TableCell align="center">{row.cargo}</TableCell>
                     <TableCell align="center">
                       {row.status == false ? <LiaClockSolid fontSize={20} title='Invited' color='orange' /> : <AiOutlineCheck fontSize={20} title='Accepted' color='green' />}
                     </TableCell>
-                    {(actualUser.cargo == 'Administrador' && row.id != actualUser.id ) && <TableCell align="center"><TrashIcon uuid={row.id} handleClick={() => handleDeleteUser(row.id)} /></TableCell>}
+                    {(row.id != actualUser.id && !row.teenant) && <TableCell align="center"><TrashIcon uuid={row.id} handleClick={() => handleDeleteUser(row.id)} /></TableCell>}
                   </TableRow>
                 )
               }

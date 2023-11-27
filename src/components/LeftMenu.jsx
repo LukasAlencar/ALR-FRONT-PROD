@@ -4,6 +4,11 @@ import ItemSidebar from './ItemSidebar'
 import SubItemSidebar from './SubItemSidebar'
 import { Link } from 'react-router-dom'
 import Logo from '../img/logo.png'
+import { LiaFileContractSolid } from "react-icons/lia";
+import { FiUsers } from "react-icons/fi";
+import { RiMoneyDollarCircleLine } from "react-icons/ri";
+import { AiOutlineShop } from "react-icons/ai";
+import { IoDocumentLockOutline } from "react-icons/io5";
 
 const LeftMenu = () => {
   return (
@@ -15,17 +20,17 @@ const LeftMenu = () => {
       </div>
       <div style={{ width: '100%'}}>
         <ul>
-          <ItemSidebar linkTo='create-contract' itemName="Contracts">
+          <ItemSidebar linkTo='create-contract' icon={<LiaFileContractSolid/>} itemName="Contracts">
             {/* <SubItemSidebar linkTo='create-contract' subItemName='Create' /> */}
           </ItemSidebar>
-          <ItemSidebar linkTo='users-list' itemName="Users">
+          <ItemSidebar linkTo='users-list' icon={<FiUsers/>} itemName="Users">
             {/* <SubItemSidebar linkTo='view-enterprise' subItemName='View' /> */}
           </ItemSidebar>
-          <ItemSidebar linkTo='create-cost-center' itemName="Cost Center">
+          <ItemSidebar linkTo='create-cost-center' icon={<RiMoneyDollarCircleLine/>} itemName="Cost Center">
           </ItemSidebar>
-          <ItemSidebar linkTo='view-owners' itemName="Owners">
+          <ItemSidebar linkTo='view-owners' icon={<AiOutlineShop/>} itemName="Vendors">
           </ItemSidebar>
-          <ItemSidebar linkTo='view-licensing-rules' itemName="Licensing Rules">
+          <ItemSidebar linkTo='view-licensing-rules' icon={<IoDocumentLockOutline/>} itemName="Licensing Rules">
           </ItemSidebar>
           {/* <ItemSidebar linkTo='calculator' itemName="Calculator">
           </ItemSidebar> */}

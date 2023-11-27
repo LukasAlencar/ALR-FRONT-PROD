@@ -6,6 +6,7 @@ import LeftMenu from "./LeftMenu";
 import Section from "./Section";
 import { Context } from "../context/AuthContext";
 import Dialog from "./Dialog/Dialog";
+import { FaRegFilePdf } from "react-icons/fa6";
 
 const PageHome = () => {
 
@@ -32,6 +33,7 @@ const PageHome = () => {
         }
     }, [])
 
+
     return (
         <>
             <div className="bg"></div>
@@ -46,8 +48,8 @@ const PageHome = () => {
                 <Navbar></Navbar>
                 <div className="flex-container-menu-left">
                     <LeftMenu />
-                    <div className="d-flex flex-1 justify-content-center" style={{ margin: '5vw 0vh 0px 10vw' }}>
-                        <Section  />
+                    <div className="d-flex flex-1 justify-content-center align-items-center flex-column main-section">
+                        <Section />
                     </div>
                 </div>
             </motion.div>

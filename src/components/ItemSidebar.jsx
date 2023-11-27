@@ -4,14 +4,14 @@ import { AiOutlineDown, AiOutlineUp } from 'react-icons/ai'
 import { AnimatePresence, motion } from "framer-motion";
 import { Link } from 'react-router-dom';
 
-const ItemSidebar = ({ children, itemName, linkTo }) => {
+const ItemSidebar = ({ children, itemName, linkTo, icon }) => {
 
     const [isShow, setIsShow] = useState(false)
 
     if (children) {
         return (
             <>
-                <li onClick={() => setIsShow(!isShow)} className='item_menu_left'>{itemName} {isShow ? <AiOutlineUp style={{ marginLeft: 10 }} fontSize={15} /> : <AiOutlineDown style={{ marginLeft: 10 }} fontSize={15} />}</li>
+                <li onClick={() => setIsShow(!isShow)} className='item_menu_left'>{icon && icon}{itemName} {isShow ? <AiOutlineUp style={{ marginLeft: 10 }} fontSize={15} /> : <AiOutlineDown style={{ marginLeft: 10 }} fontSize={15} />}</li>
                 <AnimatePresence>
                     {(isShow && children) && Children.map(children, (child, index) => {
                         return (
@@ -35,8 +35,9 @@ const ItemSidebar = ({ children, itemName, linkTo }) => {
     } else {
         return (
             <>
-                <Link className='item_menu_left' to={"../" + linkTo}>
-                    <li onClick={() => setIsShow(!isShow)} className='font-tertiary'>{itemName}</li>
+                <Link className='item_menu_left gap-2' to={"../" + linkTo}>
+                    {icon && icon}
+                    <li onClick={() => setIsShow(!isShow)} className='font-tertiary '>{itemName}</li>
                 </Link>
             </>
         )

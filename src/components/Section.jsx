@@ -1,12 +1,17 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState, useRef } from 'react'
 import '../styles/components/section.sass'
 import ListLicenses from './ListLicenses'
 import axios from 'axios'
 import CircularProgress from '@mui/material/CircularProgress';
 import { Link, useNavigate } from 'react-router-dom';
 import { Context } from '../context/AuthContext'
+import { useReactToPrint } from "react-to-print";
+import { FaRegFilePdf } from 'react-icons/fa6';
+
 
 const Section = () => {
+
+    const componentPDF = useRef();
 
     const { actualUser } = useContext(Context)
     const navigate = useNavigate()
@@ -24,6 +29,15 @@ const Section = () => {
             .finally(() => setIsLoading(false))
     }
 
+    const generatePDF = useReactToPrint(
+        {
+            content: () => componentPDF.current,
+            documentTitle: 'Report',
+            onAfterPrint: () => alert("Data saved successfully")
+        }
+    );
+
+
     useEffect(() => {
         getApi()
     }, [])
@@ -38,7 +52,7 @@ const Section = () => {
         return (
             <>
                 <div className='section-container'>
-                    <div className="section-list">
+                    <div ref={componentPDF} className="section-list">
                         {list.length > 0 ?
                             <>
                                 <div className="header-section">
@@ -66,11 +80,13 @@ const Section = () => {
                             </>
                             :
                             <div className='text-center font-tertiary'>
-                                You don't have any license. <span style={{color: 'blue'}} onClick={()=>navigate('/create-contract')} className='link'>Create Now!</span>
+                                You don't have any license. <span style={{ color: 'blue' }} onClick={() => navigate('/create-contract')} className='link'>Create Now!</span>
                             </div>
-                    }
+                        }
                     </div>
                 </div>
+                {list.length > 0 && <button className='pdf-button' onClick={generatePDF}><FaRegFilePdf /></button> }
+
             </>
         )
     }
