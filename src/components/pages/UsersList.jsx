@@ -110,15 +110,21 @@ const UsersList = () => {
 
       await apiALR.post('https://api.alrtcc.com/register/', formData)
         .then(res => console.log(res))
-        .catch((err) => console.log(err))
+        .catch((err) => {
+          if (err?.response?.data?.message == "Email já cadastrado") {
+            setModal((prev) => ({ ...prev, isShow: true, textTitle: 'Error!', textBody: 'E-mail already exists' }))
+          }
+        })
         .finally(() => {
           setIsLoading(false)
         })
 
       await apiALR.get(`https://api.alrtcc.com/users/${actualUser.enterprise}/`)
         .then(res => setRows(res.data))
-        .catch((error) => console.log(error))
-    }else{
+        .catch((error) => {
+          setModal((prev) => ({ ...prev, isShow: true, textTitle: 'Error!', textBody: 'Cannot Load users' }))
+        })
+    } else {
       setModal((prev) => ({ ...prev, isShow: true, textTitle: 'Error!', textBody: 'Empty Fields!' }))
     }
   }
