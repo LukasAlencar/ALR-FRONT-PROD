@@ -37,7 +37,7 @@ const LicensingRules = () => {
 
     const downloadFile = (file) =>{
         const a = document.createElement('a');
-        a.href = encodeURI(file);
+        a.href = file;
         a.target = '_blank';
         a.download = file.name;
         document.body.appendChild(a);

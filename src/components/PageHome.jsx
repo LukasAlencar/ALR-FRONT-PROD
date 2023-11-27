@@ -7,8 +7,9 @@ import Section from "./Section";
 import { Context } from "../context/AuthContext";
 import Dialog from "./Dialog/Dialog";
 
-
 const PageHome = () => {
+
+    const { actualUser } = useContext(Context)
 
     const { dialogAdmin, setDialogAdmin } = useContext(Context)
     const [dialog, setDialog] = useState({

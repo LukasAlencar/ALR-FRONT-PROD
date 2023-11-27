@@ -15,24 +15,20 @@ const LeftMenu = () => {
       </div>
       <div style={{ width: '100%'}}>
         <ul>
-          <ItemSidebar itemName="Contracts">
-            <SubItemSidebar linkTo='create-contract' subItemName='Create' />
+          <ItemSidebar linkTo='create-contract' itemName="Contracts">
+            {/* <SubItemSidebar linkTo='create-contract' subItemName='Create' /> */}
           </ItemSidebar>
-          <ItemSidebar itemName="Enterprise">
+          <ItemSidebar linkTo='users-list' itemName="Users">
             {/* <SubItemSidebar linkTo='view-enterprise' subItemName='View' /> */}
-            <SubItemSidebar linkTo='users-list' subItemName='Users List' />
           </ItemSidebar>
-          <ItemSidebar itemName="Cost Center">
-            <SubItemSidebar linkTo='create-cost-center' subItemName='Create' />
+          <ItemSidebar linkTo='create-cost-center' itemName="Cost Center">
           </ItemSidebar>
-          <ItemSidebar itemName="Manufactures">
-            <SubItemSidebar linkTo='create-owners' subItemName='View' />
+          <ItemSidebar linkTo='create-owners' itemName="Owners">
           </ItemSidebar>
-          <ItemSidebar itemName="Licensing Rules">
-            <SubItemSidebar linkTo='view-licensing-rules' subItemName='View' />
+          <ItemSidebar linkTo='view-licensing-rules' itemName="Licensing Rules">
           </ItemSidebar>
-          <ItemSidebar linkTo='calculator' itemName="Calculator">
-          </ItemSidebar>
+          {/* <ItemSidebar linkTo='calculator' itemName="Calculator">
+          </ItemSidebar> */}
           {/* <ItemSidebar linkTo={'dashboards'} itemName="Dashboard">
           </ItemSidebar> */}
         </ul>

@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import Logo from '../img/logo.png'
 import '../styles/components/pageLogin.sass'
 import { useNavigate } from 'react-router-dom'
@@ -18,12 +18,24 @@ const PageLogin = () => {
 
     const { register, formState: { errors }, handleSubmit } = useForm()
 
-    const { setIsAuth, getApi, actualUser, setDialogAdmin } = useContext(Context)
+    const { setIsAuth, getApi, actualUser, setDialogAdmin, createAccount, setCreateAccount } = useContext(Context)
 
     const [isLoading, setIsLoading] = useState(false)
 
     const [modal, setModal] = useState(false)
 
+    const [dialog, setDialog] = useState({
+        isShow: false,
+        text: '',
+    })
+
+    useEffect(() => {
+        if (createAccount) {
+            activeDialog('A confirmation email has been sent to your email address.', 'success', 'email')
+            setCreateAccount(false)
+        }
+
+    }, [])
 
 
     const navigate = useNavigate();
@@ -54,7 +66,7 @@ const PageLogin = () => {
                 getApi()
                 localStorage.setItem('email', userLogged.email)
                 setDialogAdmin(actualUser.cargo == "Administrador" ? true : false)
-                navigate('/home')                
+                navigate('/home')
             })
             .catch(() => { setModal(true) })
             .finally(() => { setIsLoading(false) });
@@ -62,16 +74,26 @@ const PageLogin = () => {
     }
 
 
+
+    const activeDialog = (text, color, icon) => {
+        setDialog((prev) => ({ ...prev, isShow: true, text: text, color: color, icon: icon}))
+
+        setTimeout(() => {
+            setDialog((prev) => ({ ...prev, isShow: false, text: '', color: '', icon: '',}));
+        }, 5000);
+    }
+
     const handleRegister = () => {
         navigate('/register')
     }
 
     const toggleModal = () => {
         setModal(!modal)
-        
+
     }
     return (
         <>
+            <Dialog text={dialog.text} open={dialog.isShow} />
             <ModalPattern
                 toggleModal={() => setModal(!modal)}
                 open={modal}

@@ -37,6 +37,8 @@ const RowCustom = ({ datas, handleRemoveLicense, setIsLoading, setLicensesList, 
             status: 'True',
             activateDate: '',
             expirationDate: '',
+            invoice_number: '',
+            serial_key: '',
 
         }
     )
@@ -108,6 +110,8 @@ const RowCustom = ({ datas, handleRemoveLicense, setIsLoading, setLicensesList, 
                 status: 'True',
                 activateDate: datas.start_date,
                 expirationDate: datas.end_date,
+                invoice_number: datas.invoice_number,
+                serial_key: datas.serial_key,
 
             })
         setIsEdit(val)
@@ -132,18 +136,21 @@ const RowCustom = ({ datas, handleRemoveLicense, setIsLoading, setLicensesList, 
                         <select value={listAdd.product} onChange={handleChange} name='product' className='form-select text-center' >
                             <option disabled value="default">Select a Product</option>
                             {products?.map((product) => {
-                                return <option value={product.productName}>{product.productName}</option>
+                                return <option key={product.id} value={product.name}>{product.name}</option>
                             })}
                         </select>
                     </TableCell>
                     <TableCell align="center"><input onChange={handleChange} value={listAdd.activateDate} name='activateDate' className='form-control text-center' type="date" /></TableCell>
                     <TableCell align="center"><input onChange={handleChange} value={listAdd.expirationDate} name='expirationDate' className='form-control text-center' type="date" /></TableCell>
+                    <TableCell align="center"><input onChange={handleChange} value={listAdd.invoice_number} name='invoice_number' className='form-control text-center' type="text" /></TableCell>
+                    <TableCell align="center"><input onChange={handleChange} value={listAdd.serial_key} name='serial_key' className='form-control text-center' type="text" /></TableCell>
                     <TableCell align="center">
                         <div className='d-flex flex-1 justify-content-evenly'>
                             <button onClick={handleSaveLicense} style={{ maxWidth: 100 }} className='btn btn-success'><AiOutlineCheck /></button>
                             <button onClick={() => handleToggleEdit(false)} style={{ maxWidth: 100 }} className='btn btn-danger'><HiXMark /></button>
                         </div>
                     </TableCell>
+
 
                 </TableRow>
 
@@ -173,6 +180,8 @@ const RowCustom = ({ datas, handleRemoveLicense, setIsLoading, setLicensesList, 
 
                     <TableCell align="center">{datas.start_date}</TableCell>
                     <TableCell align="center">{datas.end_date}</TableCell>
+                    <TableCell align="center">{datas.invoice_number}</TableCell>
+                    <TableCell align="center">{datas.serial_key}</TableCell>
                     <TableCell align="center">
                         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                             {actualUser.cargo == 'Administrador' && <HiOutlinePencilSquare className='pencil' onClick={() => handleToggleEdit(true)} />}

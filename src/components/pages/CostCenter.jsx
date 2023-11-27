@@ -63,6 +63,7 @@ const CostCenter = () => {
                 <LeftMenu />
                 <div style={{ marginTop: '8vh', marginLeft: '15vw' }} className='section-list-contracts'>
                     <GridPattern
+                        canEdit={true}
                         handleEdit={handleEdit}
                         listHeaderItems={listHeaderItems}
                         listBodyItems={listBodyItems}

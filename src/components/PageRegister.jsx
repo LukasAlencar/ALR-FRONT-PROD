@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import Logo from '../img/logo.png'
 import '../styles/components/pageRegister.sass'
 import { useNavigate } from 'react-router-dom'
@@ -9,10 +9,14 @@ import AlertTop from './AlertTop'
 import InputMask from 'react-input-mask'
 import ModalPattern from './ModalPattern'
 import CircularProgress from '@mui/material/CircularProgress';
+import Dialog from './Dialog/Dialog'
+import { Context } from '../context/AuthContext'
 
 
 
 const PageRegister = () => {
+
+    const { setCreateAccount } = useContext(Context)
 
     const navigate = useNavigate()
 
@@ -30,7 +34,7 @@ const PageRegister = () => {
             name: '',
             user_img: '',
             email: '',
-            password: '',
+            // password: '',
             enterpriseName: '',
             cnpj: '',
         }
@@ -50,7 +54,7 @@ const PageRegister = () => {
         name: true,
         enterprise: true,
         email: true,
-        password: true,
+        // password: true,
         cnpj: true,
     })
 
@@ -104,26 +108,37 @@ const PageRegister = () => {
             setTestValidate({ ...testValidate, enterprise: true })
         }
     }
-    const handlePassword = (e) => {
-        let patternUpperCase = /[A-Z]/
-        let patternSpecialChars = /[^a-zA-Z0-9]+/g
-        let val = e.target.value
-        setUser((prev) => ({ ...prev, password: val }))
+    // const handlePassword = (e) => {
+    //     let patternUpperCase = /[A-Z]/
+    //     let patternSpecialChars = /[^a-zA-Z0-9]+/g
+    //     let val = e.target.value
+    //     setUser((prev) => ({ ...prev, password: val }))
 
-        if (val.length >= 8 && patternUpperCase.test(val) && patternSpecialChars.test(val)) {
-            setTestValidate({ ...testValidate, password: true })
-        } else {
-            setTestValidate({ ...testValidate, password: false })
-        }
-    }
+    //     if (val.length >= 8 && patternUpperCase.test(val) && patternSpecialChars.test(val)) {
+    //         setTestValidate({ ...testValidate, password: true })
+    //     } else {
+    //         setTestValidate({ ...testValidate, password: false })
+    //     }
+    // }
 
     const handleAlert = () => {
         setIsAlert(false)
     }
 
+    function generateRandomString(length) {
+        const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        let result = '';
+        for (let i = 0; i < length; i++) {
+            const randomIndex = Math.floor(Math.random() * charset.length);
+            result += charset[randomIndex];
+        }
+        return result;
+    }
+
     const handleRegister = async () => {
         setIsLoading(true)
         if (Object.values(testValidate).every(value => value === true)) {
+            let passAleatorio = generateRandomString(10)
             let formdata = new FormData();
             let cnpj_formated = user.cnpj.replace(/\D/g, '');
             formdata.append('username', user.name);
@@ -131,14 +146,15 @@ const PageRegister = () => {
             formdata.append('enterprise_name', user.enterpriseName);
             formdata.append('cnpj', cnpj_formated);
             formdata.append('img_user', user.user_img);
-            formdata.append('password', user.password);
+            formdata.append('password', passAleatorio);
 
             await axios.post('https://api.alrtcc.com/create_enterprise/', formdata).then(() => {
-                navigate('/home');
+                setCreateAccount(true)
+                navigate('/');
             }).catch((err) => setModal((prev) => ({ ...prev, isShow: true, textTitle: <span className='error'>Error!</span>, textBody: 'Register Error!' })))
-            .finally(()=>{
-                setIsLoading(false)
-            })
+                .finally(() => {
+                    setIsLoading(false)
+                })
         }
 
     }
@@ -207,12 +223,12 @@ const PageRegister = () => {
                                     <input value={user.email} onChange={handleEmail} name="email" type="email" className={`form-control ${!testValidate.email && 'wrong'}`} placeholder='Email' id="email" aria-describedby="email" />
                                 </div>
                             </div>
-                            <div className="fields row">
+                            {/* <div className="fields row">
                                 <div className="col-6">
                                     {!testValidate.password && <span className='warning-span'>Senha deve conter no minimo: 8 caracteres / 1 carácter especial / 1 letra maiúscula</span>}
                                     <input value={user.password} onChange={handlePassword} name='password' type="password" className={`form-control ${!testValidate.password && 'wrong'}`} placeholder='Password' id="password" aria-describedby="Password" />
                                 </div>
-                            </div>
+                            </div> */}
                             <div className="register-btn-field">
                                 <div onClick={handleRegister} className='register-btn'> Register <AiOutlineArrowRight /> </div>
                             </div>

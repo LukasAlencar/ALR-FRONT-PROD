@@ -40,23 +40,27 @@ const ListLicenses = ({ datas }) => {
         }
     }
 
-    if(datas.length > 0) {
-    return (
-        <>
-            <GroupLicenses Gtitle="Actives">
-                <ItemLicense list={notExpired} status={'item-active'}/>
-            </GroupLicenses>
-            <GroupLicenses Gtitle="Expiring">
-                <ItemLicense list={expiring} status={'item-expiring'}/> 
-            </GroupLicenses>
-            <GroupLicenses Gtitle="Expired">
-                <ItemLicense list={expired} status={'item-expired'}/>
-            </GroupLicenses>
+    if (datas.length > 0) {
+        return (
+            <>
+                <GroupLicenses Gtitle="Actives">
+                    <ItemLicense list={notExpired} status={'item-active'} />
+                </GroupLicenses>
+                <GroupLicenses Gtitle="Expiring">
+                    <ItemLicense list={expiring} status={'item-expiring'} />
+                </GroupLicenses>
+                <GroupLicenses Gtitle="Expired">
+                    <ItemLicense list={expired} status={'item-expired'} />
+                </GroupLicenses>
 
-        </>
-    )
-    }else{
-        return <h1>Loading</h1>
+            </>
+        )
+    } else {
+        return (
+            <div className='text-center'>
+                <span>teste</span>
+            </div>
+        )
     }
 }
 

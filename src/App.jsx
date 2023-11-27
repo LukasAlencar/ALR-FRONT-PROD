@@ -18,6 +18,7 @@ import CostCenter from './components/pages/CostCenter'
 import ViewEnterprise from './components/pages/ViewEnterprise'
 import ChangePasswordDynamic from './components/pages/ChangePasswordDynamic/ChangePasswordDynamic'
 import LicensingRules from './components/pages/LicensingRules/LicensingRules'
+import Owners from './components/pages/Owners/Owners'
 
 function App() {
 
@@ -98,7 +99,7 @@ function App() {
 
           <Route path="/view-owners" element={
             <PrivateRoute>
-              <ReportPage />
+              <Owners />
             </PrivateRoute>}></Route>
 
           <Route path="/view-licensing-rules" element={

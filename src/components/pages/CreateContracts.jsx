@@ -95,36 +95,7 @@ const CreateContracts = () => {
                 <LeftMenu />
                 <div style={{ marginTop: '8vh', marginLeft: '15vw' }} className='section-list-contracts'>
                     <GridComponent handleRemoveLicense={(e) => handleRemoveLicense(e)} list={licensesList} />
-                    {/* {licensesList != '' && 
-                <div className="list-licenses">
-                    {licensesList.map((el) => {
-                        return (
-                            <AnimatePresence >
-                                <motion.div
-                                initial={{opacity: 0, display: 'none'}}
-                                animate={{opacity: 1, display: 'flex'}}
-                                exit={{opacity: 0, display: 'none'}} 
-                                key={el.uuid} className="license-item">
-                                    <div>{el.licenseName}, {el.activeDate}</div>
-                                    <TrashIcon  uuid={el.uuid} handleClick={(e)=>handleRemoveLicense(e)} />
-                                </motion.div>
-                            </AnimatePresence>                                            
-                        )
-                    })}
                 </div>
-                } */}
-                </div>
-                {/* <Footer>
-        <div className='footer-container'>
-            <div className='counter-container'>
-                <span className='span-counter'>{licensesList.length}</span> Contracts Added
-            </div>
-            <div className='btns-footer-container'>
-                <span onClick={()=>handleToggleModal()} className='link '>Discard changes</span>
-                <button type="button" className="btn-save-footer btn btn-primary">Save</button>
-            </div>
-        </div>
-    </Footer> */}
             </div>
 
         </>

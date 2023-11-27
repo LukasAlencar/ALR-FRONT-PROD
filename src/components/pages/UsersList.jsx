@@ -56,7 +56,7 @@ const UsersList = () => {
     async function getUsers() {
       try {
         setIsLoading(true)
-        const res = await apiALR.get('/users/');
+        const res = await apiALR.get(`/users/${actualUser.enterprise}/`);
         setRows(res.data)
         setIsLoading(false)
 
@@ -102,6 +102,7 @@ const UsersList = () => {
     formData.append('img_user', user.img_user)
     formData.append('password', passAleatorio)
     formData.append('cargo', 'Colaborador')
+    formData.append('enterprise', parseInt(actualUser.enterprise))
 
     await apiALR.post('https://api.alrtcc.com/register/', formData)
       .then(res => console.log(res))
@@ -110,7 +111,7 @@ const UsersList = () => {
         setIsLoading(false)
       })
 
-    await apiALR.get('https://api.alrtcc.com/users/')
+    await apiALR.get(`https://api.alrtcc.com/users/${actualUser.enterprise}/`)
     .then(res => setRows(res.data))
     .catch((error) => console.log(error))
   }
@@ -128,7 +129,7 @@ const UsersList = () => {
       .finally(() =>
         setIsLoading(false)
       )
-    const res = await apiALR.get('https://api.alrtcc.com/users/?format=json');
+    const res = await apiALR.get(`https://api.alrtcc.com/users/${actualUser.enterprise}`);
     setRows(res.data)
 
   }
@@ -208,7 +209,7 @@ const UsersList = () => {
                     <TableCell align="center">
                       {row.status == false ? <LiaClockSolid fontSize={20} title='Invited' color='orange' /> : <AiOutlineCheck fontSize={20} title='Accepted' color='green' />}
                     </TableCell>
-                    {actualUser.cargo == 'Administrador' == true && <TableCell align="center"><TrashIcon uuid={row.id} handleClick={() => handleDeleteUser(row.id)} /></TableCell>}
+                    {(actualUser.cargo == 'Administrador' && row.id != actualUser.id ) && <TableCell align="center"><TrashIcon uuid={row.id} handleClick={() => handleDeleteUser(row.id)} /></TableCell>}
                   </TableRow>
                 )
               }

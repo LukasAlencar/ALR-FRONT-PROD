@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import LeftMenu from './LeftMenu'
 import Navbar from './Navbar'
 import '../styles/components/my-profile.sass'
@@ -13,10 +13,21 @@ import Typography from '@mui/material/Typography';
 import { HiOutlinePencilSquare } from 'react-icons/hi2'
 import InputEdit from './InputEdit'
 import createAxiosInstance from '../settings/AxiosSettings'
+import { Navigate, useNavigate } from 'react-router-dom'
+import { CircularProgress } from '@mui/material'
+import ModalPattern from './ModalPattern'
 
 function MyProfilePage() {
+  const navigate = useNavigate()
   const { actualUser, token, getApi } = useContext(Context)
   const apiALR = createAxiosInstance(actualUser.key)
+  const [isLoading, setIsLoading] = useState(false)
+
+  const [modal, setModal] = useState({
+    isShow: false,
+    textTitle: '',
+    textBody: '',
+  })
 
   const calcFontSize = () => {
     const fontSize = Math.max(15, Math.min(25, 35 - actualUser.name.length));
@@ -27,24 +38,77 @@ function MyProfilePage() {
     let formData = new FormData();
     formData.append('name', data.input);
     apiALR.put(`/user/${actualUser.id}/`, formData)
-    .then((res) => {
-      console.log(res)
-      getApi()
-    })
-    .catch((err) => {console.log(err)})
+      .then((res) => {
+        console.log(res)
+        getApi()
+      })
+      .catch((err) => { console.log(err) })
   }
   const handleEditPassword = (data) => {
     let formData = new FormData();
     formData.append('password', data.input);
     apiALR.put(`/user/${actualUser.id}/`, formData)
-    .then((res) => {
-      console.log(res)
-      getApi()
-    })
-    .catch((err) => {console.log(err)})
+      .then((res) => {
+        console.log(res)
+        getApi()
+      })
+      .catch((err) => { console.log(err) })
+  }
+
+
+  const handleDeleteAccount = () => {
+    setModal((prev) => ({
+      ...prev,
+      isShow: true,
+      textTitle: <span className='error'>Are you sure?!</span>,
+      textBtn1: 'CANCEL',
+      textBody:
+        <>
+          Are you sure to delete <span style={{ fontWeight: 'bold' }}>YOUR ACCOUNT?</span>
+          <br/>
+          <span style={{color: 'gray', fontSize: 13}}>* This cannot be undone.</span>
+
+        </>,
+      textBtn2: 'DELETE',
+      handleClick2: deleteAccount
+    }))
+  }
+  const deleteAccount = async () => {
+
+    let id = actualUser.id
+    setIsLoading(true)
+    await apiALR.delete('https://api.alrtcc.com/user/' + id)
+      .then(() => {
+        navigate('/')
+      })
+      .catch(err => console.log(err))
+      .finally(() =>
+        setIsLoading(false)
+      )
+
+  }
+
+  if (isLoading) {
+    return (
+      <>
+        <div className='mask' />
+        <CircularProgress className='progress-rol' />
+      </>
+    )
   }
   return (
     <>
+      <ModalPattern
+        toggleModal={() => setModal((prev) => ({ ...prev, isShow: false }))}
+        open={modal.isShow}
+        textTitle={modal.textTitle}
+        textBody={modal.textBody}
+        textBtn1={modal.textBtn1 ? modal.textBtn1 : 'Ok'}
+        textBtn2={modal.textBtn2}
+        handleClick2={modal.handleClick2}
+        colorBtn2={'error'}
+        handleClick1={() => setModal((prev) => ({ ...prev, isShow: false }))}
+      />
       <div className='bg'></div>
       <LeftMenu />
       <Navbar />
@@ -127,6 +191,23 @@ function MyProfilePage() {
                   </>
                 }
               />
+            </ListItem>
+            <Divider variant='middle' component="li" />
+            <ListItem
+              style={{ flex: .3, alignItems: 'center', justifyContent: 'center' }}
+              alignItems="flex-center"
+            >
+
+              <Typography
+                style={{ marginRight: 5, textAlign: 'center' }}
+                sx={{ display: 'inline' }}
+                component="div"
+                variant="body2"
+                className='delete-account-link'
+                onClick={() => { handleDeleteAccount(actualUser.id) }}
+              >
+                Delete Account
+              </Typography>
             </ListItem>
           </List>
         </div>

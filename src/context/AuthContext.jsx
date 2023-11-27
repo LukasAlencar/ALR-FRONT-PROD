@@ -13,6 +13,7 @@ export const AuthProvider = ({ children }) => {
     const [actualUser, setActualUser] = useState(
         {name:'', email:'', img_user:'', enterprise: '', status: '', cargo: '', id: ''}
     )
+    const [createAccount, setCreateAccount] = useState(false)
 
     const navigate = useNavigate()
 
@@ -92,7 +93,20 @@ export const AuthProvider = ({ children }) => {
         return <div>Carregando</div>
     }else{
         return (
-            <Context.Provider value={{ isAuth, setIsAuth, token, userLogged, setUserLogged, actualUser, setActualUser, getApi, dialogAdmin, setDialogAdmin}}>
+            <Context.Provider value={{ isAuth, 
+                setIsAuth, 
+                token, 
+                userLogged, 
+                setUserLogged, 
+                actualUser, 
+                setActualUser, 
+                getApi, 
+                dialogAdmin, 
+                setDialogAdmin,
+                createAccount,
+                setCreateAccount
+            
+            }}>
                 {children}
             </Context.Provider>
         )

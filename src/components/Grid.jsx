@@ -16,7 +16,7 @@ import Paper from '@mui/material/Paper';
 
 import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
 
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 
 import { LiaFileContractSolid } from 'react-icons/lia'
@@ -29,6 +29,7 @@ import { AiOutlineCheck } from 'react-icons/ai'
 import CircularProgress from '@mui/material/CircularProgress';
 import RowCustom from './RowCustom';
 import ModalPattern from './ModalPattern';
+import { Context } from '../context/AuthContext';
 
 
 const downloadContract = (file) => {
@@ -42,6 +43,8 @@ const downloadContract = (file) => {
 }
 
 const GridComponent = () => {
+
+    const { actualUser } = useContext(Context)
     const [isLoading, setIsLoading] = useState(false)
     const [loadingProducts, setLoadingProducts] = useState(true)
     const [products, setProducts] = useState([])
@@ -53,7 +56,9 @@ const GridComponent = () => {
             cost_center: "",
             status: true,
             start_date: "",
-            end_date: ""
+            end_date: "",
+            invoice_number: "",
+            serial_key: "",
         }]
     )
     const [modal, setModal] = useState({
@@ -63,12 +68,17 @@ const GridComponent = () => {
     })
 
     async function getApi() {
+        debugger;
         setIsLoading(true)
-        axios.get('https://api.alrtcc.com/contracts?enterprise_id=6/')
+        axios.get(`https://api.alrtcc.com/contracts/${actualUser.enterprise}`)
             .then(res => {
                 setLicensesList(res.data)
             })
-            .catch(err => console.log(err))
+            .catch(err => {
+                if (err?.response?.data?.message == "Nenhum contrato encontrado") {
+                    setLicensesList([])
+                }
+            })
             .finally(() => setIsLoading(false))
     }
 
@@ -86,10 +96,10 @@ const GridComponent = () => {
     }, [])
 
     const handleAddLicense = async () => {
-        
-        if (listAdd.product && listAdd.activateDate && listAdd.expirationDate && listAdd.product) {
-            if(listAdd.activateDate > listAdd.expirationDate) {
-                setModal((prev) => ({ ...prev, isShow: true, textTitle: <span className='error'>Error!</span>, textBody: <>The <span style={{fontWeight: 'bold'}}>Activate Date</span> cannot be later than the <span style={{fontWeight: 'bold'}}>Expirate Date.</span></>}))
+
+        if (listAdd.product && listAdd.activateDate && listAdd.expirationDate && listAdd.product && listAdd.product != 'default') {
+            if (listAdd.activateDate > listAdd.expirationDate) {
+                setModal((prev) => ({ ...prev, isShow: true, textTitle: <span className='error'>Error!</span>, textBody: <>The <span style={{ fontWeight: 'bold' }}>Activate Date</span> cannot be later than the <span style={{ fontWeight: 'bold' }}>Expirate Date.</span></> }))
                 return false
             }
             setIsLoading(true);
@@ -99,8 +109,9 @@ const GridComponent = () => {
             formData.append('status', listAdd.status)
             formData.append('start_date', listAdd.activateDate)
             formData.append('end_date', listAdd.expirationDate)
-            formData.append('enterprise', 6)
-
+            formData.append('invoice_number', listAdd.invoice_number)
+            formData.append('serial_key', listAdd.serial_key)
+            formData.append('enterprise', actualUser.enterprise)
 
             await axiosInstance.post('https://api.alrtcc.com/register-contract/', formData)
                 .then(() => {
@@ -112,7 +123,7 @@ const GridComponent = () => {
                 })
             getApi()
             return;
-        }else{
+        } else {
             setModal((prev) => ({ ...prev, isShow: true, textTitle: <span className='error'>Error!</span>, textBody: 'Fields Empty!' }))
         }
         setIsLoading(false);
@@ -136,7 +147,8 @@ const GridComponent = () => {
             status: 'True',
             activateDate: '',
             expirationDate: '',
-
+            invoice_number: '',
+            serial_key: '',
         }
     )
 
@@ -160,13 +172,13 @@ const GridComponent = () => {
     const handleRemoveLicense = async (uuid) => {
         setIsLoading(true)
         await axios.delete(`https://api.alrtcc.com/contract/${uuid}`)
-            .then(()=> setModal((prev) => ({ ...prev, isShow: true, textTitle: 'Success!', textBody: 'Contract removed successfully!' })))
-            .catch(() => setModal((prev) => ({ ...prev, isShow: true, textTitle: <span className='error'>Error!</span>, textBody: 'Contract not removed!'})))
+            .then(() => setModal((prev) => ({ ...prev, isShow: true, textTitle: 'Success!', textBody: 'Contract removed successfully!' })))
+            .catch(() => setModal((prev) => ({ ...prev, isShow: true, textTitle: <span className='error'>Error!</span>, textBody: 'Contract not removed!' })))
             .finally(() => {
                 setIsLoading(false);
+                getApi();
             })
 
-        getApi();
     }
 
     return (
@@ -193,6 +205,8 @@ const GridComponent = () => {
                             <TableCell align="center">Product</TableCell>
                             <TableCell align="center">Activate Date</TableCell>
                             <TableCell align="center">Expirate  Date</TableCell>
+                            <TableCell align="center">Invoice Number</TableCell>
+                            <TableCell align="center">Serial Key</TableCell>
                             <TableCell align="center">Actions</TableCell>
                         </TableRow>
                     </TableHead>
@@ -200,26 +214,37 @@ const GridComponent = () => {
                         <TableRow
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                         >
-                            <TableCell align="center"><input onChange={handleFileChange} type="file" accept='application/pdf' className='form-control' /></TableCell>
+                            <TableCell className='d-flex align-items-center' align="center">
+                                <label title={listAdd?.contract?.name ? listAdd.contract.name : 'Choose a file'} className='labelInputContract' htmlFor="fileContract">{listAdd?.contract?.name ? listAdd.contract.name : 'Choose a file'}</label>
+                                <input onChange={handleFileChange} id="fileContract" type="file" accept='application/pdf' className='inputFileContract' />
+                            </TableCell>
                             <TableCell>
-                                <select value={listAdd.product} onChange={handleChange} name='product' className='form-select text-center' >
-                                    <option disabled value="default">Select Product</option>
+                                <select style={{width: 150}} value={listAdd.product} onChange={handleChange} name='product' className='form-select text-center' >
+                                    <option value="default">Select Product</option>
                                     {loadingProducts && <option disabled value="default">Loading...</option>}
 
                                     {products?.map((product) => {
-                                            return <option key={product.id} value={product.id}>{product.name}</option>
+                                        return <option key={product.id} value={product.name}>{product.name}</option>
                                     })}
                                 </select>
                             </TableCell>
                             <TableCell align="center"><input onChange={handleChange} value={listAdd.activateDate} name='activateDate' className='form-control text-center' type="date" /></TableCell>
                             <TableCell align="center"><input onChange={handleChange} value={listAdd.expirationDate} name='expirationDate' className='form-control text-center' type="date" /></TableCell>
+                            <TableCell align="center"><input onChange={handleChange} value={listAdd.invoice_number} name='invoice_number' className='form-control text-center' type="text" /></TableCell>
+                            <TableCell align="center"><input onChange={handleChange} value={listAdd.serial_key} name='serial_key' className='form-control text-center' type="text" /></TableCell>
                             <TableCell align="center"><button onClick={handleAddLicense} style={{ width: 100 }} className='btn btn-primary'>Add +</button></TableCell>
 
 
                         </TableRow>
-                        {licensesList?.slice().reverse()?.map((license) => (
-                            <RowCustom products={products} setIsLoading={setIsLoading} setLicensesList={setLicensesList} handleRemoveLicense={(e) => { handleRemoveLicense(e) }} datas={license} />
-                        ))}
+                        {licensesList?.slice().reverse()?.map((license) => {
+                            return (
+                                <>
+                                    {(products.length != 0 && license.name != 'default') &&
+                                        <RowCustom products={products} setIsLoading={setIsLoading} setLicensesList={setLicensesList} handleRemoveLicense={(e) => { handleRemoveLicense(e) }} datas={license} />
+                                    }
+                                </>
+                            )
+                        })}
                     </TableBody>
                 </Table>
             </TableContainer>
