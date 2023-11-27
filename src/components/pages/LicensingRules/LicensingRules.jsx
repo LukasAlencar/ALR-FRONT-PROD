@@ -33,9 +33,9 @@ const LicensingRules = () => {
                 })
         })()
 
-    },[])
+    }, [])
 
-    const downloadFile = (file) =>{
+    const downloadFile = (file) => {
         const a = document.createElement('a');
         a.href = file;
         a.target = '_blank';
@@ -47,7 +47,7 @@ const LicensingRules = () => {
 
     const listHeaderItems = [
         { itemName: 'title', align: 'center', fileField: { is: false, accept: '' }, editField: { is: false }, },
-        { itemName: 'file', align: 'center', fileField: { is: false, accept: '' }, editField: { is: false }, downloadIcon: true, downloadFunction: () => {downloadFile}},
+        { itemName: 'file', align: 'center', fileField: { is: false, accept: '' }, editField: { is: false }, downloadIcon: true, downloadFunction: () => { downloadFile } },
     ]
 
     if (isLoading) {
@@ -61,6 +61,7 @@ const LicensingRules = () => {
 
         return (
             <>
+                <div className="bg"></div>
                 <ModalPattern
                     toggleModal={() => setModal((prev) => ({ ...prev, isShow: false }))}
                     open={modal.isShow}
@@ -71,13 +72,15 @@ const LicensingRules = () => {
                 />
                 <Navbar />
                 <LeftMenu />
-                <div className="main-section">
-                    <GridPattern
-                        downloadFunction={downloadFile}
-                        listHeaderItems={listHeaderItems}
-                        listBodyItems={listBodyItems}
-                        canEdit={false}
-                    />
+                <div className="main-section overflow-hidden d-flex justify-content-center align-items-center">
+                    <div className='section-grid-table'>
+                        <GridPattern
+                            downloadFunction={downloadFile}
+                            listHeaderItems={listHeaderItems}
+                            listBodyItems={listBodyItems}
+                            canEdit={false}
+                        />
+                    </div>
                 </div>
             </>
         )

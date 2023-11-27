@@ -36,7 +36,7 @@ const ItemSidebar = ({ children, itemName, linkTo }) => {
         return (
             <>
                 <Link className='item_menu_left' to={"../" + linkTo}>
-                    <li onClick={() => setIsShow(!isShow)} className=''>{itemName}</li>
+                    <li onClick={() => setIsShow(!isShow)} className='font-tertiary'>{itemName}</li>
                 </Link>
             </>
         )

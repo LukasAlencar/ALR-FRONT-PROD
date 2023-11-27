@@ -8,7 +8,7 @@ const GroupLicenses = ({ children, Gtitle }) => {
 
     return (
         <>
-            <div className='item-license item-title'>
+            <div className='item-license item-title font-tertiary'>
                 <div className="link" onClick={() => setIsShow(!isShow)}>{Gtitle} { isShow ? <AiOutlineUp style={{marginLeft: 2, marginTop: -2}} fontSize={15}/> : <AiOutlineDown style={{marginLeft: 2}} fontSize={15}/>}</div>
             </div>
             <AnimatePresence>

@@ -43,7 +43,7 @@ const Section = () => {
                             <>
                                 <div className="header-section">
                                     <ul className='ul-header-section'>
-                                        <div className="row text-align-center width-100">
+                                        <div className="row text-align-center width-100 font-tertiary">
                                             <div className="col-sm">
                                                 Id
                                             </div>
@@ -65,7 +65,7 @@ const Section = () => {
 
                             </>
                             :
-                            <div className='text-center'>
+                            <div className='text-center font-tertiary'>
                                 You don't have any license. <span style={{color: 'blue'}} onClick={()=>navigate('/create-contract')} className='link'>Create Now!</span>
                             </div>
                     }

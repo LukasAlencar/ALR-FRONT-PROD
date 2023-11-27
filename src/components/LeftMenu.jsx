@@ -23,7 +23,7 @@ const LeftMenu = () => {
           </ItemSidebar>
           <ItemSidebar linkTo='create-cost-center' itemName="Cost Center">
           </ItemSidebar>
-          <ItemSidebar linkTo='create-owners' itemName="Owners">
+          <ItemSidebar linkTo='view-owners' itemName="Owners">
           </ItemSidebar>
           <ItemSidebar linkTo='view-licensing-rules' itemName="Licensing Rules">
           </ItemSidebar>
