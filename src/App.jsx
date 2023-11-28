@@ -19,7 +19,7 @@ import ViewEnterprise from './components/pages/ViewEnterprise'
 import ChangePasswordDynamic from './components/pages/ChangePasswordDynamic/ChangePasswordDynamic'
 import LicensingRules from './components/pages/LicensingRules/LicensingRules'
 import Owners from './components/pages/Owners/Owners'
-import Teste from './components/Teste'
+import NotFound from './components/pages/NotFound/NotFound'
 
 function App() {
 
@@ -113,11 +113,7 @@ function App() {
               <PageHome />
             </PrivateRoute>} />
 
-          <Route path="/teste" element={
-            <PrivateRoute>
-              < Teste/>
-            </PrivateRoute>} />
-
+            <Route path="*" element={<NotFound />} /> {/* Maped */}
         </Routes>
       </AuthProvider>
     </AnimatePresence>
