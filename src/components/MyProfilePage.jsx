@@ -35,24 +35,36 @@ function MyProfilePage() {
   };
 
   const handleEditName = async (data) => {
-    let formData = new FormData();
-    formData.append('name', data.input);
-    apiALR.put(`/user/${actualUser.id}/`, formData)
-      .then((res) => {
-        console.log(res)
-        getApi()
-      })
-      .catch((err) => { console.log(err) })
+    if (data.input.length <= 22) {
+      let formData = new FormData();
+      formData.append('name', data.input);
+      apiALR.put(`/user/${actualUser.id}/`, formData)
+        .then((res) => {
+          console.log(res)
+          getApi()
+        })
+        .catch((err) => { console.log(err) })
+    } else {
+      setModal((prev) => ({ ...prev, isShow: true, textTitle: 'Error!', textBody: 'Max Characteres lenght is 22!' }))
+
+    }
   }
   const handleEditPassword = (data) => {
-    let formData = new FormData();
-    formData.append('password', data.input);
-    apiALR.put(`/user/${actualUser.id}/`, formData)
+    let patternPass = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(.{8,})$/
+    if(patternPass.test(data.input)){
+
+      let formData = new FormData();
+      formData.append('password', data.input);
+      apiALR.put(`/user/${actualUser.id}/`, formData)
       .then((res) => {
         console.log(res)
         getApi()
       })
       .catch((err) => { console.log(err) })
+    }else {
+      setModal((prev) => ({ ...prev, isShow: true, textTitle: 'Error!', textBody: 'Password must have a minimum of 8 characters, at least 1 uppercase character, and at least 1 special character.' }))
+
+    }
   }
 
 

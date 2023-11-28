@@ -33,7 +33,6 @@ const Section = () => {
         {
             content: () => componentPDF.current,
             documentTitle: 'Report',
-            onAfterPrint: () => alert("Data saved successfully")
         }
     );
 
@@ -59,7 +58,10 @@ const Section = () => {
                                     <ul className='ul-header-section'>
                                         <div className="row text-align-center width-100 font-tertiary">
                                             <div className="col-sm">
-                                                Id
+                                                Serial Key
+                                            </div>
+                                            <div className="col-sm">
+                                                Invoice Number
                                             </div>
                                             <div className="col-sm">
                                                 Name
@@ -73,6 +75,7 @@ const Section = () => {
                                         </div>
                                     </ul>
                                 </div>
+                                <div className='divider'></div>
                                 <div >
                                     <ListLicenses datas={list} />
                                 </div>
@@ -85,7 +88,7 @@ const Section = () => {
                         }
                     </div>
                 </div>
-                {list.length > 0 && <button className='pdf-button' onClick={generatePDF}><FaRegFilePdf /></button> }
+                {list.length > 0 && <button className='pdf-button' onClick={generatePDF}><FaRegFilePdf /></button>}
 
             </>
         )

@@ -10,7 +10,10 @@ const ItemLicense = ({ list, status }) => {
                         <div className={'item-license ' + status} key={el.id}>
                             <div className="row text-align-center width-100">
                                 <div className="col-sm">
-                                    {el.id}
+                                    {el.serial_key}
+                                </div>
+                                <div className="col-sm">
+                                    {el.invoice_number}
                                 </div>
                                 <div className="col-sm">
                                     {el.name}

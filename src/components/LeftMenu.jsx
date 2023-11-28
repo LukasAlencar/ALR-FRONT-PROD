@@ -26,8 +26,8 @@ const LeftMenu = () => {
           <ItemSidebar linkTo='users-list' icon={<FiUsers/>} itemName="Users">
             {/* <SubItemSidebar linkTo='view-enterprise' subItemName='View' /> */}
           </ItemSidebar>
-          <ItemSidebar linkTo='create-cost-center' icon={<RiMoneyDollarCircleLine/>} itemName="Cost Center">
-          </ItemSidebar>
+          {/* <ItemSidebar linkTo='create-cost-center' icon={<RiMoneyDollarCircleLine/>} itemName="Cost Center">
+          </ItemSidebar> */}
           <ItemSidebar linkTo='view-owners' icon={<AiOutlineShop/>} itemName="Vendors">
           </ItemSidebar>
           <ItemSidebar linkTo='view-licensing-rules' icon={<IoDocumentLockOutline/>} itemName="Licensing Rules">

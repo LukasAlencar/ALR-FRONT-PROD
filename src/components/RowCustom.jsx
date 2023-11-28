@@ -54,9 +54,9 @@ const RowCustom = ({ datas, handleRemoveLicense, setIsLoading, setLicensesList, 
     }
 
     const handleSaveLicense = async () => {
-        setIsLoading(true);
-
-        if (listAdd.product && listAdd.activateDate && listAdd.expirationDate && listAdd.product) {
+        
+        if (listAdd.product && listAdd.activateDate && listAdd.expirationDate && listAdd.product != 'default' && listAdd.invoice_number && listAdd.serial_key) {
+            setIsLoading(true);
 
             if (listAdd.activateDate > listAdd.expirationDate) {
                 setModal((prev) => ({ ...prev, isShow: true, textTitle: <span className='error'>Error!</span>, textBody: <>The <span style={{ fontWeight: 'bold' }}>Activate Date</span> cannot be later than the <span style={{ fontWeight: 'bold' }}>Expirate Date.</span></> }))
@@ -67,6 +67,9 @@ const RowCustom = ({ datas, handleRemoveLicense, setIsLoading, setLicensesList, 
             formData.append('status', listAdd.status)
             formData.append('start_date', listAdd.activateDate)
             formData.append('end_date', listAdd.expirationDate)
+            formData.append('invoice_number', listAdd.invoice_number)
+            formData.append('serial_key', listAdd.serial_key)
+
 
             if (listAdd.contract) {
                 formData.append('file', listAdd.contract)
@@ -84,7 +87,7 @@ const RowCustom = ({ datas, handleRemoveLicense, setIsLoading, setLicensesList, 
 
             getApi()
         } else {
-
+            setModal((prev) => ({ ...prev, isShow: true, textTitle: <span className='error'>Cannot edit your license</span>, textBody: 'Empty Fields!' }))
         }
     }
 
@@ -94,7 +97,7 @@ const RowCustom = ({ datas, handleRemoveLicense, setIsLoading, setLicensesList, 
     async function getApi() {
         setIsLoading(true)
 
-        await axios.get('https://api.alrtcc.com/contracts/')
+        await axios.get(`https://api.alrtcc.com/contracts/${actualUser.enterprise}`)
             .then(res => {
                 setLicensesList(res.data)
             })

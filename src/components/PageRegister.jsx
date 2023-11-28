@@ -11,12 +11,14 @@ import ModalPattern from './ModalPattern'
 import CircularProgress from '@mui/material/CircularProgress';
 import Dialog from './Dialog/Dialog'
 import { Context } from '../context/AuthContext'
+import { useForm } from 'react-hook-form'
 
 
 
 const PageRegister = () => {
 
     const { setCreateAccount } = useContext(Context)
+    const { register, formState: { errors }, handleSubmit } = useForm()
 
     const navigate = useNavigate()
 
@@ -40,86 +42,22 @@ const PageRegister = () => {
         }
     )
 
-    const handleChangeUser = (e) => {
-        let { name, value, files } = e.target;
-        setUser((prev) => ({ ...prev, [name]: name == 'user_img' ? files[0] : value }))
-    }
-
     useEffect(() => {
     }, [])
 
     // VALIDATION
 
     const [testValidate, setTestValidate] = useState({
-        name: true,
-        enterprise: true,
-        email: true,
+        name: false,
+        enterprise: false,
+        email: false,
         // password: true,
-        cnpj: true,
+        cnpj: false,
     })
 
     // Licenses States
 
     const [isAlert, setIsAlert] = useState(false)
-
-    const handleName = (e) => {
-        let val = e.target.value
-        setUser((prev) => ({ ...prev, name: val }))
-
-        if (val == '') {
-            setTestValidate({ ...testValidate, name: false })
-        } else {
-            setTestValidate({ ...testValidate, name: true })
-        }
-    }
-
-    const handleEmail = (e) => {
-        let patternEmail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-        let val = e.target.value
-        setUser((prev) => ({ ...prev, email: val }))
-
-        if (!patternEmail.test(val)) {
-            setTestValidate({ ...testValidate, email: false })
-        } else {
-            setTestValidate({ ...testValidate, email: true })
-        }
-    }
-
-    const handleCNPJ = (e) => {
-        let val = e.target.value
-        let patternCNPJ = /^\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2}$/
-
-        setUser((prev) => ({ ...prev, cnpj: val }))
-        if (!patternCNPJ.test(val)) {
-            setTestValidate({ ...testValidate, cnpj: false })
-        } else {
-            setTestValidate({ ...testValidate, cnpj: true })
-        }
-
-    }
-
-    const handleEnterprise = (e) => {
-        let val = e.target.value
-        setUser((prev) => ({ ...prev, enterpriseName: val }))
-
-        if (!val) {
-            setTestValidate({ ...testValidate, enterprise: false })
-        } else {
-            setTestValidate({ ...testValidate, enterprise: true })
-        }
-    }
-    // const handlePassword = (e) => {
-    //     let patternUpperCase = /[A-Z]/
-    //     let patternSpecialChars = /[^a-zA-Z0-9]+/g
-    //     let val = e.target.value
-    //     setUser((prev) => ({ ...prev, password: val }))
-
-    //     if (val.length >= 8 && patternUpperCase.test(val) && patternSpecialChars.test(val)) {
-    //         setTestValidate({ ...testValidate, password: true })
-    //     } else {
-    //         setTestValidate({ ...testValidate, password: false })
-    //     }
-    // }
 
     const handleAlert = () => {
         setIsAlert(false)
@@ -135,28 +73,34 @@ const PageRegister = () => {
         return result;
     }
 
-    const handleRegister = async () => {
+    const onSubmit = async (data) => {
         setIsLoading(true)
-        if (Object.values(testValidate).every(value => value === true)) {
-            let passAleatorio = generateRandomString(10)
-            let formdata = new FormData();
-            let cnpj_formated = user.cnpj.replace(/\D/g, '');
-            formdata.append('username', user.name);
-            formdata.append('email', user.email);
-            formdata.append('enterprise_name', user.enterpriseName);
-            formdata.append('cnpj', cnpj_formated);
-            formdata.append('img_user', user.user_img);
-            formdata.append('password', passAleatorio);
 
-            await axios.post('https://api.alrtcc.com/create_enterprise/', formdata).then(() => {
+        let passAleatorio = generateRandomString(10)
+        let formdata = new FormData();
+        let cnpj_formated = data.cnpj.replace(/\D/g, '');
+        formdata.append('username', data.name);
+        formdata.append('email', data.email);
+        formdata.append('enterprise_name', data.enterpriseName);
+        formdata.append('cnpj', cnpj_formated);
+        formdata.append('img_user', data.user_img[0]);
+        formdata.append('password', passAleatorio);
+
+        await axios.post('https://api.alrtcc.com/create_enterprise/', formdata)
+            .then(() => {
                 setCreateAccount(true)
                 navigate('/');
-            }).catch((err) => setModal((prev) => ({ ...prev, isShow: true, textTitle: <span className='error'>Error!</span>, textBody: 'Register Error!' })))
-                .finally(() => {
-                    setIsLoading(false)
-                })
-        }
-
+            })
+            .catch((err) => {
+                if(err.response.data.message === 'Empresa já cadastrada'){
+                    setModal((prev) => ({ ...prev, isShow: true, textTitle: <span className='error font-tertiary'>Error!</span>, textBody: <span className='font-tertiary'>Enterprise already exists</span> }))
+                }else if(err.response.data.message ===  'Email já cadastrado'){
+                    setModal((prev) => ({ ...prev, isShow: true, textTitle: <span className='error font-tertiary'>Error!</span>, textBody: <span className='font-tertiary'>E-mail already exists</span> }))
+                }
+            })
+            .finally(() => {
+                setIsLoading(false)
+            })
     }
 
     return (
@@ -196,31 +140,103 @@ const PageRegister = () => {
                             <div className="fields row">
                                 <div className="col-6">
                                     <label htmlFor="formFile" className="form-label">Profile Image</label>
-                                    <input onChange={handleChangeUser} name="user_img" accept='image/*' className="form-control" type="file" id="formFile" />
+                                    <input
+                                        accept='image/*'
+                                        className={`form-control mb-1 ${errors?.user_img && 'error-input-file'}`}
+                                        type="file"
+                                        id="formFile"
+                                        {...register("user_img", { required: true })}
+                                    />
+                                    {errors?.user_img?.type === 'required' && <span className="error font-tertiary label-cp">Required *</span>}
                                 </div>
                             </div>
                             <div className="fields row">
                                 <div className="col-6">
-                                    {!testValidate.name && <span className='warning-span'>Campo obrigatório</span>}
-                                    <input maxLength={22} value={user.name} onChange={handleName} name="name" type="text" className={`form-control ${!testValidate.name && 'wrong'}`} placeholder='Name' id="name" aria-describedby="Name" />
+                                    {/* {!testValidate.name && <span className='warning-span'>Campo obrigatório</span>} */}
+                                    <input maxLength={22}
+                                        name="name"
+                                        type="text"
+                                        className={`form-control mb-1 ${errors?.name && 'error-input-file'}`}
+                                        placeholder='Name'
+                                        id="name"
+                                        aria-describedby="Name"
+                                        {...register("name", { required: true })}
+                                    />
+                                    {errors?.name?.type === 'required' && <span className="error font-tertiary label-cp">Required *</span>}
                                 </div>
                             </div>
                             <div className="fields row">
                                 <div className="col-6">
-                                    {!testValidate.enterprise && <span className='warning-span'>Campo obrigatório</span>}
-                                    <input value={user.enterprise} onChange={handleEnterprise} name="enterpriseName" type="text" className={`form-control ${!testValidate.enterprise && 'wrong'}`} placeholder='Enterprise' id="enterprise" aria-describedby="Enterprise" />
+                                    {/* {!testValidate.enterprise && <span className='warning-span'>Campo obrigatório</span>} */}
+                                    <input
+                                        name="enterpriseName"
+                                        type="text"
+                                        className={`form-control mb-1 ${errors?.enterprise && 'error-input-file'}`}
+                                        placeholder='Enterprise'
+                                        id="enterprise"
+                                        aria-describedby="Enterprise"
+                                        {...register("enterprise", { required: true })}
+                                    />
+                                    {errors?.enterprise?.type === 'required' && <span className="error font-tertiary label-cp">Required *</span>}
+
                                 </div>
                             </div>
                             <div className="fields row">
                                 <div className="col-6">
-                                    {!testValidate.cnpj && <span className='warning-span'>Campo obrigatório</span>}
-                                    <InputMask mask={'99.999.999/9999-99'} value={user.cnpj} onChange={handleCNPJ} name="cnpj" type="text" className={`form-control ${!testValidate.cnpj && 'wrong'}`} placeholder='CNPJ' id="cnpj" aria-describedby="CNPJ" />
+                                    {/* {!testValidate.cnpj && <span className='warning-span'>Campo obrigatório</span>} */}
+                                    <InputMask mask={'99.999.999/9999-99'}
+                                        name="cnpj"
+                                        type="text"
+                                        className={`form-control mb-1 ${errors?.cnpj && 'error-input-file'}`}
+                                        placeholder='CNPJ'
+                                        id="cnpj"
+                                        aria-describedby="CNPJ"
+                                        {...register("cnpj",
+                                            {
+                                                required: true,
+                                                validate: (value) => {
+                                                    return value !== '__.___.___/____-__';
+                                                },
+                                                pattern: {
+                                                    value: /^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/,
+                                                    message: 'Invalid CNPJ format'
+                                                },
+                                                testNum: (value) => {
+                                                    const numericRegex = /^[0-9]+$/;
+                                                    return numericRegex.test(value);
+                                                },
+                                            })}
+                                    />
+                                    {errors?.cnpj?.type === 'required' && <span className="error font-tertiary label-cp">Required *</span>}
+                                    {errors?.cnpj?.type === 'validate' && <span className="error font-tertiary label-cp">Required *</span>}
+                                    {errors?.cnpj?.type === 'pattern' && <span className="error font-tertiary label-cp">{errors.cnpj.message}</span>}
+
+
                                 </div>
                             </div>
                             <div className="fields row">
                                 <div className="col-6">
-                                    {!testValidate.email && <span className='warning-span'>Email incorreto</span>}
-                                    <input value={user.email} onChange={handleEmail} name="email" type="email" className={`form-control ${!testValidate.email && 'wrong'}`} placeholder='Email' id="email" aria-describedby="email" />
+                                    {/* {!testValidate.email && <span className='warning-span'>Email incorreto</span>} */}
+                                    <input
+                                        name="email"
+                                        type="email"
+                                        className={`form-control mb-1 ${errors?.email && 'error-input-file'}`}
+                                        placeholder='Email'
+                                        id="email"
+                                        aria-describedby="email"
+                                        {...register("email",
+                                            {
+                                                required: true,
+                                                pattern: {
+                                                    value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/,
+                                                    message: 'Invalid email format'
+                                                },
+                                            })
+                                        }
+                                    />
+                                    {errors?.email?.type === 'pattern' && <span className="error font-tertiary label-cp">{errors.email.message}</span>}
+                                    {errors?.email?.type === 'required' && <span className="error font-tertiary label-cp">Required *</span>}
+
                                 </div>
                             </div>
                             {/* <div className="fields row">
@@ -230,7 +246,7 @@ const PageRegister = () => {
                                 </div>
                             </div> */}
                             <div className="register-btn-field">
-                                <div onClick={handleRegister} className='register-btn'> Register <AiOutlineArrowRight /> </div>
+                                <div onClick={() => handleSubmit(onSubmit)()} className='register-btn'> Register <AiOutlineArrowRight /> </div>
                             </div>
                             <div className='have-account'>
                                 Already have a account? <span onClick={() => { navigate('/') }}>Login</span>
