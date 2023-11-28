@@ -95,8 +95,7 @@ const UsersList = () => {
   }
 
   const handleAddUser = async () => {
-
-    if (user.name && user.email && user.img_user && user.position) {
+    if (user.name && user.email && user.img_user && user.position && user.position != 'default') {
 
       setIsLoading(true)
       let passAleatorio = generateRandomString(10)

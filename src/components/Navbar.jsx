@@ -7,6 +7,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useContext, useEffect, useState } from 'react'
 import { Context } from '../context/AuthContext'
 import createAxiosInstance from '../settings/AxiosSettings'
+import { IoPersonOutline } from "react-icons/io5";
 
 const Navbar = () => {
 
@@ -41,11 +42,11 @@ const Navbar = () => {
                         <MediaQuery maxWidth={991}>
                             <li className="nav-item">
                                 <Link to="/my-profile">
-                                    <span onClick={() => { setPage('profile') }} className={page == 'profile' ? 'nav-link active' : 'nav-link '} href="">Meu Perfil</span>
+                                    <span onClick={() => { setPage('profile') }} className={page == 'profile' ? 'nav-link active d-flex align-items-center' : 'nav-link d-flex align-items-center'} href=""><IoPersonOutline/> My Profile</span>
                                 </Link>
                             </li>
                             <li className="nav-item">
-                                <span onClick={handleLogout} className="exit nav-link cursor-pointer">Sair <span className='iconExit'><IoExitOutline /></span> </span>
+                                <span onClick={handleLogout} className="exit nav-link cursor-pointer d-flex align-items-center"><span className='iconExit'><IoExitOutline /></span> Exit</span>
                             </li>
 
                         </MediaQuery>
@@ -65,12 +66,12 @@ const Navbar = () => {
                                     <li><hr className="dropdown-divider" /></li>
                                     <li>
                                         <Link to="/my-profile">
-                                            <span onClick={() => { setPage('profile') }} className={page == 'profile' ? 'dropdown-item active' : 'dropdown-item'} href="#">Meu Perfil</span>
+                                            <span onClick={() => { setPage('profile') }} className={page == 'profile' ? 'dropdown-item active d-flex align-items-center gap-2' : 'dropdown-item d-flex align-items-center gap-2'} href="#"><IoPersonOutline/> My Profile</span>
                                         </Link>
                                     </li>
                                     <li><hr className="dropdown-divider" /></li>
                                     <li>
-                                        <span onClick={handleLogout} className="exit dropdown-item cursor-pointer" >Sair <span className='iconExit'><IoExitOutline /></span></span>
+                                        <span onClick={handleLogout} className="exit dropdown-item cursor-pointer d-flex align-items-center gap-2" ><span className='iconExit'><IoExitOutline /></span> Exit </span>
                                     </li>
                                 </ul>
                             </li>

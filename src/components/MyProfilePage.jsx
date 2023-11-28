@@ -65,8 +65,8 @@ function MyProfilePage() {
       textBody:
         <>
           Are you sure to delete <span style={{ fontWeight: 'bold' }}>YOUR ACCOUNT?</span>
-          <br/>
-          <span style={{color: 'gray', fontSize: 13}}>* This cannot be undone.</span>
+          <br />
+          <span style={{ color: 'gray', fontSize: 13 }}>* This cannot be undone.</span>
 
         </>,
       textBtn2: 'DELETE',
@@ -192,23 +192,27 @@ function MyProfilePage() {
                 }
               />
             </ListItem>
-            <Divider variant='middle' component="li" />
-            <ListItem
-              style={{ flex: .3, alignItems: 'center', justifyContent: 'center' }}
-              alignItems="flex-center"
-            >
+            {!actualUser.teenant && (
+              <>
+                <Divider variant='middle' component="li" />
+                <ListItem
+                  style={{ flex: .3, alignItems: 'center', justifyContent: 'center' }}
+                  alignItems="flex-center"
+                >
 
-              <Typography
-                style={{ marginRight: 5, textAlign: 'center' }}
-                sx={{ display: 'inline' }}
-                component="div"
-                variant="body2"
-                className='delete-account-link'
-                onClick={() => { handleDeleteAccount(actualUser.id) }}
-              >
-                Delete Account
-              </Typography>
-            </ListItem>
+                  <Typography
+                    style={{ marginRight: 5, textAlign: 'center' }}
+                    sx={{ display: 'inline' }}
+                    component="div"
+                    variant="body2"
+                    className='delete-account-link'
+                    onClick={() => { handleDeleteAccount(actualUser.id) }}
+                  >
+                    Delete Account
+                  </Typography>
+                </ListItem>
+              </>
+            )}
           </List>
         </div>
       </div>

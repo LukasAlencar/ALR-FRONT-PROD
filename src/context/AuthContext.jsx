@@ -11,14 +11,14 @@ export const AuthProvider = ({ children }) => {
     const [token, setToken] = useState('')
     const [userLogged, setUserLogged] = useState('')
     const [actualUser, setActualUser] = useState(
-        {name:'', email:'', img_user:'', enterprise: '', status: '', cargo: '', id: ''}
+        {name:'', email:'', img_user:'', enterprise: '', status: '', cargo: '', id: '', teenant: '',}
     )
     const [createAccount, setCreateAccount] = useState(false)
 
     const navigate = useNavigate()
 
 
-    const handleActualUser = (name, email, img_user, enterprise, status, cargo, id, key) =>{
+    const handleActualUser = (name, email, img_user, enterprise, status, cargo, id, key, teenant) =>{
         setActualUser({
             name,
             email,
@@ -28,6 +28,7 @@ export const AuthProvider = ({ children }) => {
             cargo,
             id,
             key,
+            teenant,
         })
     }
 
@@ -46,11 +47,12 @@ export const AuthProvider = ({ children }) => {
             let status = res.data.data.user.status;
             let cargo = res.data.data.user.cargo;
             let id = res.data.data.user.id;
+            let teenant = res.data.data.user.teenant;
             
 
             setIsAuth(true)
 
-            handleActualUser(name, email, img_user, enterprise, status, cargo, id, token)
+            handleActualUser(name, email, img_user, enterprise, status, cargo, id, token, teenant)
             localStorage.setItem('userName', name)
             localStorage.setItem('email', email)
             localStorage.setItem('userImg', img_user)
