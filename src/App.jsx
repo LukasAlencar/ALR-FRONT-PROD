@@ -19,6 +19,7 @@ import ViewEnterprise from './components/pages/ViewEnterprise'
 import ChangePasswordDynamic from './components/pages/ChangePasswordDynamic/ChangePasswordDynamic'
 import LicensingRules from './components/pages/LicensingRules/LicensingRules'
 import Owners from './components/pages/Owners/Owners'
+import Teste from './components/Teste'
 
 function App() {
 
@@ -110,6 +111,11 @@ function App() {
           <Route path="/home" element={
             <PrivateRoute>
               <PageHome />
+            </PrivateRoute>} />
+
+          <Route path="/teste" element={
+            <PrivateRoute>
+              < Teste/>
             </PrivateRoute>} />
 
         </Routes>
