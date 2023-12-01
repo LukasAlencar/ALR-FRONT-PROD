@@ -3,6 +3,7 @@ import React, { Children, useState } from 'react'
 
 import {AiOutlineDown, AiOutlineUp} from 'react-icons/ai'
 
+
 const GroupLicenses = ({ children, Gtitle }) => {
     const [isShow, setIsShow] = useState(true)
 

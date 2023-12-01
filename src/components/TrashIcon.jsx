@@ -20,7 +20,7 @@ const TrashIcon = ({handleClick, uuid, mt}) => {
     }
 
     return (
-        <div title="Remove" id={uuid} onMouseEnter={() => setAnimationState({...animationState, isStopped: false})}
+        <div title="Remover" id={uuid} onMouseEnter={() => setAnimationState({...animationState, isStopped: false})}
         onMouseOut={()=> setAnimationState({...animationState, isStopped: true, direction: -1})}
         onClick={(e)=> handleClick(e.target.id)}
         style={{cursor: 'pointer', marginTop: mt, marginLeft: 5}}

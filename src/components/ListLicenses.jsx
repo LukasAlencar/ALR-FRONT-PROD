@@ -4,6 +4,11 @@ import { differenceInDays, parse, format } from 'date-fns';
 import ItemLicense from './ItemLicense';
 import GroupLicenses from './GroupLicenses';
 
+// TODO: Change language to pt-br
+// TODO: Remove unused libs
+// TODO: Remove unused functions / constants
+// TODO: Remove console.log
+
 const ListLicenses = ({ datas }) => {
     const [expired, setExpired] = useState([]);
     const [notExpired, setNotExpired] = useState([]);
@@ -43,13 +48,13 @@ const ListLicenses = ({ datas }) => {
     if (datas.length > 0) {
         return (
             <>
-                <GroupLicenses Gtitle="Actives">
+                <GroupLicenses Gtitle="Ativas">
                     <ItemLicense list={notExpired} status={'item-active'} />
                 </GroupLicenses>
-                <GroupLicenses Gtitle="Expiring">
+                <GroupLicenses Gtitle="Expirando">
                     <ItemLicense list={expiring} status={'item-expiring'} />
                 </GroupLicenses>
-                <GroupLicenses Gtitle="Expired">
+                <GroupLicenses Gtitle="Expiradas">
                     <ItemLicense list={expired} status={'item-expired'} />
                 </GroupLicenses>
 
@@ -58,7 +63,7 @@ const ListLicenses = ({ datas }) => {
     } else {
         return (
             <div className='text-center'>
-                <span>teste</span>
+                Não existe dados
             </div>
         )
     }

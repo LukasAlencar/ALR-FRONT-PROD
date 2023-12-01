@@ -13,34 +13,12 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
-
-import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
-
-import React, { useContext, useEffect, useState } from 'react'
-import { Link } from 'react-router-dom';
-
-import { LiaFileContractSolid } from 'react-icons/lia'
-import TrashIcon from './TrashIcon'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import axios from 'axios';
-
-import { LiaClockSolid } from 'react-icons/lia'
-import { AiOutlineCheck } from 'react-icons/ai'
-
 import CircularProgress from '@mui/material/CircularProgress';
 import RowCustom from './RowCustom';
 import ModalPattern from './ModalPattern';
 import { Context } from '../context/AuthContext';
-
-
-const downloadContract = (file) => {
-    const a = document.createElement('a');
-    a.href = file;
-    a.target = '_blank';
-    a.download = file.name;
-    document.body.appendChild(a);
-    a.click();
-    URL.revokeObjectURL(file);
-}
 
 const GridComponent = () => {
 
@@ -68,7 +46,6 @@ const GridComponent = () => {
     })
 
     async function getApi() {
-        debugger;
         setIsLoading(true)
         axios.get(`https://api.alrtcc.com/contracts/${actualUser.enterprise}`)
             .then(res => {
@@ -88,7 +65,7 @@ const GridComponent = () => {
             await axios.get('https://api.alrtcc.com/products/').then(res => {
                 setProducts(res.data)
             })
-                .catch(err => console.log(err))
+                .catch(() => setModal((prev) => ({ ...prev, isShow: true, textTitle: <span className='error'>Ocorreu um erro!</span>, textBody: 'Não foi possível carregar os produtos' })))
                 .finally(() => {
                     setLoadingProducts(false)
                 })
@@ -97,9 +74,19 @@ const GridComponent = () => {
 
     const handleAddLicense = async () => {
 
-        if (listAdd.product && listAdd.activateDate && listAdd.expirationDate && listAdd.product && listAdd.product != 'default') {
+        if (listAdd.activateDate && listAdd.expirationDate && listAdd.product && listAdd.product != 'default') {
+            let invoice_number = listAdd.invoice_number
+            let serial_key = listAdd.serial_key
+
+            if (invoice_number == '' || invoice_number == undefined || invoice_number == null) {
+                invoice_number = 'NaN'
+            }
+            if (serial_key == '' || serial_key == undefined || serial_key == null) {
+                serial_key = 'NaN'
+            }
+
             if (listAdd.activateDate > listAdd.expirationDate) {
-                setModal((prev) => ({ ...prev, isShow: true, textTitle: <span className='error'>Error!</span>, textBody: <>The <span style={{ fontWeight: 'bold' }}>Activate Date</span> cannot be later than the <span style={{ fontWeight: 'bold' }}>Expirate Date.</span></> }))
+                setModal((prev) => ({ ...prev, isShow: true, textTitle: <span className='error'>Ocorreu um erro!</span>, textBody: <>A <span style={{ fontWeight: 'bold' }}>Data de Ativação</span> não pode ser maior do que a <span style={{ fontWeight: 'bold' }}>Data de expiração</span></> }))
                 return false
             }
             setIsLoading(true);
@@ -115,16 +102,17 @@ const GridComponent = () => {
 
             await axiosInstance.post('https://api.alrtcc.com/register-contract/', formData)
                 .then(() => {
-                    setModal((prev) => ({ ...prev, isShow: true, textTitle: 'Success!', textBody: 'Contract added successfully!' }))
+                    setModal((prev) => ({ ...prev, isShow: true, textTitle: 'Feito!', textBody: 'Licença adicionada com sucesso!' }))
+                    limparCampos()
                 })
-                .catch(() => setModal((prev) => ({ ...prev, isShow: true, textTitle: <span className='error'>Error!</span>, textBody: 'Contract not added!' })))
+                .catch(() => setModal((prev) => ({ ...prev, isShow: true, textTitle: <span className='error'>Ocorreu um erro!</span>, textBody: 'Não foi possível adicionar a licença' })))
                 .finally(() => {
                     setIsLoading(false);
                 })
             getApi()
             return;
         } else {
-            setModal((prev) => ({ ...prev, isShow: true, textTitle: <span className='error'>Error!</span>, textBody: 'Fields Empty!' }))
+            setModal((prev) => ({ ...prev, isShow: true, textTitle: <span className='error'>Ocorreu um erro!</span>, textBody: 'Campos vazios!' }))
         }
         setIsLoading(false);
     }
@@ -152,6 +140,22 @@ const GridComponent = () => {
         }
     )
 
+    const limparCampos = () => {
+        setListAdd({
+            product: '',
+            activateDate: '',
+            expirationDate: '',
+            invoice_number: '',
+            serial_key: '',
+            status: listAdd.status,
+        });
+
+        // Limpeza do input de arquivo
+        if (contractInputRef.current) {
+            contractInputRef.current.value = '';
+        }
+    };
+
     // Função para obter o token CSRF do cookie
     function getCookie(name) {
         const value = `; ${document.cookie}`;
@@ -161,29 +165,29 @@ const GridComponent = () => {
         }
     }
 
+    const contractInputRef = useRef();
+
     const csrftoken = getCookie('csrftoken');
 
     const axiosInstance = axios.create({
         headers: {
-            'X-CSRFToken': csrftoken // Inclua o token CSRF nos cabeçalhos da solicitação
+            'X-CSRFToken': csrftoken
         }
     });
 
     const handleRemoveLicense = async (uuid) => {
         setIsLoading(true)
         await axios.delete(`https://api.alrtcc.com/contract/${uuid}`)
-            .then(() => setModal((prev) => ({ ...prev, isShow: true, textTitle: 'Success!', textBody: 'Contract removed successfully!' })))
-            .catch(() => setModal((prev) => ({ ...prev, isShow: true, textTitle: <span className='error'>Error!</span>, textBody: 'Contract not removed!' })))
+            .then(() => setModal((prev) => ({ ...prev, isShow: true, textTitle: 'Sucesso!', textBody: 'Licença removida!' })))
+            .catch(() => setModal((prev) => ({ ...prev, isShow: true, textTitle: <span className='error'>Ocorreu um erro!</span>, textBody: 'Licença não pôde ser removida, tente novamente mais tarde.' })))
             .finally(() => {
                 setIsLoading(false);
                 getApi();
             })
 
     }
-
     return (
         <>
-
             <ModalPattern
                 toggleModal={() => setModal((prev) => ({ ...prev, isShow: false }))}
                 open={modal.isShow}
@@ -201,13 +205,13 @@ const GridComponent = () => {
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     <TableHead>
                         <TableRow>
-                            <TableCell align="center">Contract</TableCell>
-                            <TableCell align="center">Product</TableCell>
-                            <TableCell align="center">Activate Date</TableCell>
-                            <TableCell align="center">Expirate  Date</TableCell>
-                            <TableCell align="center">Invoice Number</TableCell>
-                            <TableCell align="center">Serial Key</TableCell>
-                            <TableCell align="center">Actions</TableCell>
+                            <TableCell align="center">Contrato <span style={{ fontSize: 12, color: 'gray' }}>PDF</span></TableCell>
+                            <TableCell align="center">Produto</TableCell>
+                            <TableCell align="center">Data de Ativação</TableCell>
+                            <TableCell align="center">Data de Expiração</TableCell>
+                            <TableCell align="center">Número da Invoice</TableCell>
+                            <TableCell align="center">Chave Serial</TableCell>
+                            <TableCell align="center">Ações</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -215,13 +219,13 @@ const GridComponent = () => {
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                         >
                             <TableCell className='d-flex align-items-center' align="center">
-                                <label title={listAdd?.contract?.name ? listAdd.contract.name : 'Choose a file'} className='labelInputContract' htmlFor="fileContract">{listAdd?.contract?.name ? listAdd.contract.name : 'Choose a file'}</label>
-                                <input onChange={handleFileChange} id="fileContract" type="file" accept='application/pdf' className='inputFileContract' />
+                                <label title={listAdd?.contract?.name ? listAdd.contract.name : 'Escolha um arquivo'} className='labelInputContract' htmlFor="fileContract">{listAdd?.contract?.name ? listAdd.contract.name : 'Escolha um arquivo'}</label>
+                                <input ref={contractInputRef} onChange={handleFileChange} id="fileContract" type="file" accept='application/pdf' className='inputFileContract' />
                             </TableCell>
                             <TableCell>
-                                <select style={{width: 150}} value={listAdd.product} onChange={handleChange} name='product' className='form-select text-center' >
-                                    <option value="default">Select Product</option>
-                                    {loadingProducts && <option disabled value="default">Loading...</option>}
+                                <select style={{ width: 150 }} value={listAdd.product} onChange={handleChange} name='product' className='form-select text-center' >
+                                    <option value="default">Selecione um produto</option>
+                                    {loadingProducts && <option disabled value="default">Carregando...</option>}
 
                                     {products?.map((product) => {
                                         return <option key={product.id} value={product.name}>{product.name}</option>

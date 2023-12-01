@@ -5,6 +5,11 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { Fade } from '@mui/material';
 
+// TODO: Change language to pt-br
+// TODO: Remove unused libs
+// TODO: Remove unused functions / constants
+// TODO: Remove console.log
+
 const style = {
   position: 'absolute',
   top: '50%',

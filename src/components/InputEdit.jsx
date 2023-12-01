@@ -3,6 +3,11 @@ import { useForm } from 'react-hook-form'
 import { AiOutlineCheck } from 'react-icons/ai'
 import { HiOutlinePencilSquare, HiXMark } from 'react-icons/hi2'
 
+// TODO: Change language to pt-br
+// TODO: Remove unused libs
+// TODO: Remove unused functions / constants
+// TODO: Remove console.log
+
 const InputEdit = ({ valueDefault, onSubmit, typeInput }) => {
     const { register, formState: errors, handleSubmit } = useForm()
     const [isEdit, setIsEdit] = useState(false)

@@ -7,6 +7,11 @@ import ModalPattern from '../../ModalPattern'
 import CircularProgress from '@mui/material/CircularProgress';
 import { LiaFileContractSolid } from 'react-icons/lia'
 
+// TODO: Change language to pt-br
+// TODO: Remove unused libs
+// TODO: Remove unused functions / constants
+// TODO: Remove console.log
+
 
 const LicensingRules = () => {
 

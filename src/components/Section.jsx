@@ -3,11 +3,14 @@ import '../styles/components/section.sass'
 import ListLicenses from './ListLicenses'
 import axios from 'axios'
 import CircularProgress from '@mui/material/CircularProgress';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Context } from '../context/AuthContext'
 import { useReactToPrint } from "react-to-print";
 import { FaRegFilePdf } from 'react-icons/fa6';
 
+// TODO: Change language to pt-br
+// TODO: Remove unused functions / constants
+// TODO: Remove console.log
 
 const Section = () => {
 
@@ -58,19 +61,19 @@ const Section = () => {
                                     <ul className='ul-header-section'>
                                         <div className="row text-align-center width-100 font-tertiary">
                                             <div className="col-sm">
-                                                Serial Key
+                                                Chave Serial
                                             </div>
                                             <div className="col-sm">
-                                                Invoice Number
+                                                Número da Invoice
                                             </div>
                                             <div className="col-sm">
-                                                Name
+                                                Produto
                                             </div>
                                             <div className="col-sm">
-                                                Start Date
+                                                Data de ativação
                                             </div>
                                             <div className="col-sm">
-                                                End Date
+                                                Data de Expiração
                                             </div>
                                         </div>
                                     </ul>
@@ -82,9 +85,12 @@ const Section = () => {
 
                             </>
                             :
-                            <div className='text-center font-tertiary'>
-                                You don't have any license. <span style={{ color: 'blue' }} onClick={() => navigate('/create-contract')} className='link'>Create Now!</span>
-                            </div>
+                            <>
+                                <div className='text-center font-tertiary'>
+                                    Você não possui nenhuma licença. <span style={{ color: 'blue', fontSize: 15 }} onClick={() => navigate('/create-contract')} className='link'>Criar licença!</span>
+                                </div>
+                                <div className='divider'></div>
+                            </>
                         }
                     </div>
                 </div>

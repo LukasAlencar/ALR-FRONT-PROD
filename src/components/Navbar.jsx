@@ -9,6 +9,11 @@ import { Context } from '../context/AuthContext'
 import createAxiosInstance from '../settings/AxiosSettings'
 import { IoPersonOutline } from "react-icons/io5";
 
+// TODO: Change language to pt-br
+// TODO: Remove unused libs
+// TODO: Remove unused functions / constants
+// TODO: Remove console.log
+
 const Navbar = () => {
 
     const apiALR = createAxiosInstance(localStorage.getItem('token'))

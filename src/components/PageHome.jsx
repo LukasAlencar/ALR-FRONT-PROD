@@ -1,4 +1,3 @@
-import Container from "./Container";
 import { useEffect, useContext, useState } from "react";
 import Navbar from "./Navbar";
 import { motion } from "framer-motion"
@@ -6,11 +5,8 @@ import LeftMenu from "./LeftMenu";
 import Section from "./Section";
 import { Context } from "../context/AuthContext";
 import Dialog from "./Dialog/Dialog";
-import { FaRegFilePdf } from "react-icons/fa6";
 
 const PageHome = () => {
-
-    const { actualUser } = useContext(Context)
 
     const { dialogAdmin, setDialogAdmin } = useContext(Context)
     const [dialog, setDialog] = useState({
@@ -28,7 +24,7 @@ const PageHome = () => {
 
     useEffect(() => {
         if (dialogAdmin) {
-            activeDialog('You logged in as administrator!')
+            activeDialog('Você entrou como administrador!')
             setDialogAdmin(false);
         }
     }, [])

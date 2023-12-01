@@ -1,5 +1,5 @@
 import { TableCell, TableRow } from '@mui/material'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { LiaFileContractSolid } from 'react-icons/lia'
 import TrashIcon from './TrashIcon'
 import axios from 'axios'
@@ -56,12 +56,11 @@ const RowCustom = ({ datas, handleRemoveLicense, setIsLoading, setLicensesList, 
     const handleSaveLicense = async () => {
         
         if (listAdd.product && listAdd.activateDate && listAdd.expirationDate && listAdd.product != 'default' && listAdd.invoice_number && listAdd.serial_key) {
-            setIsLoading(true);
-
             if (listAdd.activateDate > listAdd.expirationDate) {
-                setModal((prev) => ({ ...prev, isShow: true, textTitle: <span className='error'>Error!</span>, textBody: <>The <span style={{ fontWeight: 'bold' }}>Activate Date</span> cannot be later than the <span style={{ fontWeight: 'bold' }}>Expirate Date.</span></> }))
+                setModal((prev) => ({ ...prev, isShow: true, textTitle: <span className='error'>Ocorreu um erro!</span>, textBody: <>A <span style={{ fontWeight: 'bold' }}>Data de Ativação</span> não pode ser maior do que a <span style={{ fontWeight: 'bold' }}>Data de Expiração.</span></> }))
                 return false
             }
+            setIsLoading(true);
             const formData = new FormData()
             formData.append('name', listAdd.product)
             formData.append('status', listAdd.status)
@@ -77,31 +76,28 @@ const RowCustom = ({ datas, handleRemoveLicense, setIsLoading, setLicensesList, 
 
             await axios.put(`https://api.alrtcc.com/contract/${datas.id}/`, formData)
                 .then(() => {
-                    setModal((prev) => ({ ...prev, isShow: true, textTitle: 'Success!', textBody: 'Contract edited successfully!' }))
+                    setModal((prev) => ({ ...prev, isShow: true, textTitle: 'Sucesso!', textBody: 'Contrato editado com sucesso!' }))
                     setIsEdit(false)
                 })
-                .catch(() => setModal((prev) => ({ ...prev, isShow: true, textTitle: <span className='error'>Error!</span>, textBody: 'Contract not edited!' })))
+                .catch(() => setModal((prev) => ({ ...prev, isShow: true, textTitle: <span className='error'>Ocorreu um erro!</span>, textBody: 'Não foi possível editar o contrato, tente novamente mais tarde!' })))
                 .finally(() => {
                     setIsLoading(false);
                 })
 
             getApi()
         } else {
-            setModal((prev) => ({ ...prev, isShow: true, textTitle: <span className='error'>Cannot edit your license</span>, textBody: 'Empty Fields!' }))
+            setModal((prev) => ({ ...prev, isShow: true, textTitle: <span className='error'>Ocorreu um erro!</span>, textBody: 'Campos vazios!' }))
         }
     }
-
-    useEffect(() => {
-    }, [])
 
     async function getApi() {
         setIsLoading(true)
 
-        await axios.get(`https://api.alrtcc.com/contracts/${actualUser.enterprise}`)
+        await axios.get(`https://api.alrtcc.com/contracts/${actualUser.enterprise}/`)
             .then(res => {
                 setLicensesList(res.data)
             })
-            .catch(err => console.log(err))
+            .catch(() => setModal((prev) => ({ ...prev, isShow: true, textTitle: <span className='error'>Ocorreu um erro!</span>, textBody: 'Não foi possível carregar as licenças' })))
             .finally(() => setIsLoading(false))
     }
 
@@ -137,7 +133,7 @@ const RowCustom = ({ datas, handleRemoveLicense, setIsLoading, setLicensesList, 
                     <TableCell align="center"><input onChange={handleFileChange} type="file" accept='application/pdf' className='form-control' /></TableCell>
                     <TableCell>
                         <select value={listAdd.product} onChange={handleChange} name='product' className='form-select text-center' >
-                            <option disabled value="default">Select a Product</option>
+                            <option disabled value="default">Selecione um produto</option>
                             {products?.map((product) => {
                                 return <option key={product.id} value={product.name}>{product.name}</option>
                             })}
@@ -153,10 +149,7 @@ const RowCustom = ({ datas, handleRemoveLicense, setIsLoading, setLicensesList, 
                             <button onClick={() => handleToggleEdit(false)} style={{ maxWidth: 100 }} className='btn btn-danger'><HiXMark /></button>
                         </div>
                     </TableCell>
-
-
                 </TableRow>
-
             </>
         )
     } else {
@@ -175,7 +168,7 @@ const RowCustom = ({ datas, handleRemoveLicense, setIsLoading, setLicensesList, 
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                 >
                     <TableCell align='center'>
-                        <LiaFileContractSolid fontSize={30} title='Download Contract' className='link' onClick={() => downloadContract(datas.file)} />
+                        {datas.file ? <LiaFileContractSolid fontSize={30} title='Baixar licença' className='link' onClick={() => downloadContract(datas.file)} /> : '--'}
                     </TableCell>
                     <TableCell align="center">
                         {datas.name}
@@ -183,11 +176,11 @@ const RowCustom = ({ datas, handleRemoveLicense, setIsLoading, setLicensesList, 
 
                     <TableCell align="center">{datas.start_date}</TableCell>
                     <TableCell align="center">{datas.end_date}</TableCell>
-                    <TableCell align="center">{datas.invoice_number}</TableCell>
-                    <TableCell align="center">{datas.serial_key}</TableCell>
+                    <TableCell align="center">{datas.invoice_number ? datas.invoice_number : '--'}</TableCell>
+                    <TableCell align="center">{datas.serial_key ? datas.serial_key : '--'}</TableCell>
                     <TableCell align="center">
                         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                            {actualUser.cargo == 'Administrador' && <HiOutlinePencilSquare className='pencil' onClick={() => handleToggleEdit(true)} />}
+                            {actualUser.cargo == 'Administrador' && <HiOutlinePencilSquare title='Editar Licença' className='pencil' onClick={() => handleToggleEdit(true)} />}
                             {actualUser.cargo == 'Administrador' ? <TrashIcon width={20} mt={0} uuid={datas.id} handleClick={() => handleRemoveLicense(datas.id)} /> : <>--</>}
                         </div>
                     </TableCell>

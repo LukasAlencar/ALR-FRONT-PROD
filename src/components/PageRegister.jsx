@@ -3,17 +3,14 @@ import Logo from '../img/logo.png'
 import '../styles/components/pageRegister.sass'
 import { useNavigate } from 'react-router-dom'
 import { AiOutlineArrowRight } from 'react-icons/ai'
-import axios, { Axios } from 'axios'
-import { AnimatePresence, motion, useAnimate } from 'framer-motion'
+import axios from 'axios'
+import { AnimatePresence, motion } from 'framer-motion'
 import AlertTop from './AlertTop'
 import InputMask from 'react-input-mask'
 import ModalPattern from './ModalPattern'
 import CircularProgress from '@mui/material/CircularProgress';
-import Dialog from './Dialog/Dialog'
 import { Context } from '../context/AuthContext'
 import { useForm } from 'react-hook-form'
-
-
 
 const PageRegister = () => {
 
@@ -29,31 +26,6 @@ const PageRegister = () => {
     })
 
     const [isLoading, setIsLoading] = useState(false)
-
-
-    const [user, setUser] = useState(
-        {
-            name: '',
-            user_img: '',
-            email: '',
-            // password: '',
-            enterpriseName: '',
-            cnpj: '',
-        }
-    )
-
-    useEffect(() => {
-    }, [])
-
-    // VALIDATION
-
-    const [testValidate, setTestValidate] = useState({
-        name: false,
-        enterprise: false,
-        email: false,
-        // password: true,
-        cnpj: false,
-    })
 
     // Licenses States
 
@@ -92,10 +64,10 @@ const PageRegister = () => {
                 navigate('/');
             })
             .catch((err) => {
-                if(err.response.data.message === 'Empresa já cadastrada'){
-                    setModal((prev) => ({ ...prev, isShow: true, textTitle: <span className='error font-tertiary'>Error!</span>, textBody: <span className='font-tertiary'>Enterprise already exists</span> }))
-                }else if(err.response.data.message ===  'Email já cadastrado'){
-                    setModal((prev) => ({ ...prev, isShow: true, textTitle: <span className='error font-tertiary'>Error!</span>, textBody: <span className='font-tertiary'>E-mail already exists</span> }))
+                if (err.response.data.message === 'Empresa já cadastrada') {
+                    setModal((prev) => ({ ...prev, isShow: true, textTitle: <span className='error font-tertiary'>Não foi possível criar a conta.</span>, textBody: <span className='font-tertiary'>Empresa já cadastrada.</span> }))
+                } else if (err.response.data.message === 'Email já cadastrado') {
+                    setModal((prev) => ({ ...prev, isShow: true, textTitle: <span className='error font-tertiary'>Não foi possível criar a conta.</span>, textBody: <span className='font-tertiary7'>E-mail já cadastrado.</span> }))
                 }
             })
             .finally(() => {
@@ -139,51 +111,58 @@ const PageRegister = () => {
                             className="fields-container">
                             <div className="fields row">
                                 <div className="col-6">
-                                    <label htmlFor="formFile" className="form-label">Profile Image</label>
+                                    <label htmlFor="formFile" className="form-label">Imagem de Perfil <span style={{fontSize: 14, color: 'gray'}}> png / jpg / jpeg / gif</span></label>
                                     <input
                                         accept='image/*'
                                         className={`form-control mb-1 ${errors?.user_img && 'error-input-file'}`}
                                         type="file"
                                         id="formFile"
-                                        {...register("user_img", { required: true })}
+                                        {...register("user_img", {
+                                            validate: (value) => {
+                                                debugger
+                                                let acceptedFormats = ['png', 'jpg', 'jpeg', 'gif'];
+                                                let fileExtension = value[0]?.name.split('.').pop().toLowerCase();
+                                                if (!acceptedFormats.includes(fileExtension)) {
+                                                    return 'Formato inválido';
+                                                }
+                                                return true;
+                                            }
+                                        })}
                                     />
-                                    {errors?.user_img?.type === 'required' && <span className="error font-tertiary label-cp">Required *</span>}
+                                    {errors?.user_img && <span className="error font-tertiary label-cp">{errors.user_img.message}</span>}
                                 </div>
                             </div>
                             <div className="fields row">
                                 <div className="col-6">
-                                    {/* {!testValidate.name && <span className='warning-span'>Campo obrigatório</span>} */}
                                     <input maxLength={22}
                                         name="name"
                                         type="text"
                                         className={`form-control mb-1 ${errors?.name && 'error-input-file'}`}
-                                        placeholder='Name'
+                                        placeholder='Nome'
                                         id="name"
-                                        aria-describedby="Name"
+                                        aria-describedby="Nome"
                                         {...register("name", { required: true })}
                                     />
-                                    {errors?.name?.type === 'required' && <span className="error font-tertiary label-cp">Required *</span>}
+                                    {errors?.name?.type === 'required' && <span className="error font-tertiary label-cp">Obrigatório *</span>}
                                 </div>
                             </div>
                             <div className="fields row">
                                 <div className="col-6">
-                                    {/* {!testValidate.enterprise && <span className='warning-span'>Campo obrigatório</span>} */}
                                     <input
                                         name="enterpriseName"
                                         type="text"
                                         className={`form-control mb-1 ${errors?.enterprise && 'error-input-file'}`}
-                                        placeholder='Enterprise'
+                                        placeholder='Empresa'
                                         id="enterprise"
-                                        aria-describedby="Enterprise"
+                                        aria-describedby="Empresa"
                                         {...register("enterprise", { required: true })}
                                     />
-                                    {errors?.enterprise?.type === 'required' && <span className="error font-tertiary label-cp">Required *</span>}
+                                    {errors?.enterprise?.type === 'required' && <span className="error font-tertiary label-cp">Obrigatório *</span>}
 
                                 </div>
                             </div>
                             <div className="fields row">
                                 <div className="col-6">
-                                    {/* {!testValidate.cnpj && <span className='warning-span'>Campo obrigatório</span>} */}
                                     <InputMask mask={'99.999.999/9999-99'}
                                         name="cnpj"
                                         type="text"
@@ -199,7 +178,7 @@ const PageRegister = () => {
                                                 },
                                                 pattern: {
                                                     value: /^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/,
-                                                    message: 'Invalid CNPJ format'
+                                                    message: 'CNPJ Inválido'
                                                 },
                                                 testNum: (value) => {
                                                     const numericRegex = /^[0-9]+$/;
@@ -207,8 +186,8 @@ const PageRegister = () => {
                                                 },
                                             })}
                                     />
-                                    {errors?.cnpj?.type === 'required' && <span className="error font-tertiary label-cp">Required *</span>}
-                                    {errors?.cnpj?.type === 'validate' && <span className="error font-tertiary label-cp">Required *</span>}
+                                    {errors?.cnpj?.type === 'required' && <span className="error font-tertiary label-cp">Obrigatório *</span>}
+                                    {errors?.cnpj?.type === 'validate' && <span className="error font-tertiary label-cp">Obrigatório *</span>}
                                     {errors?.cnpj?.type === 'pattern' && <span className="error font-tertiary label-cp">{errors.cnpj.message}</span>}
 
 
@@ -216,7 +195,6 @@ const PageRegister = () => {
                             </div>
                             <div className="fields row">
                                 <div className="col-6">
-                                    {/* {!testValidate.email && <span className='warning-span'>Email incorreto</span>} */}
                                     <input
                                         name="email"
                                         type="email"
@@ -235,21 +213,15 @@ const PageRegister = () => {
                                         }
                                     />
                                     {errors?.email?.type === 'pattern' && <span className="error font-tertiary label-cp">{errors.email.message}</span>}
-                                    {errors?.email?.type === 'required' && <span className="error font-tertiary label-cp">Required *</span>}
+                                    {errors?.email?.type === 'required' && <span className="error font-tertiary label-cp">Obrigatório *</span>}
 
                                 </div>
                             </div>
-                            {/* <div className="fields row">
-                                <div className="col-6">
-                                    {!testValidate.password && <span className='warning-span'>Senha deve conter no minimo: 8 caracteres / 1 carácter especial / 1 letra maiúscula</span>}
-                                    <input value={user.password} onChange={handlePassword} name='password' type="password" className={`form-control ${!testValidate.password && 'wrong'}`} placeholder='Password' id="password" aria-describedby="Password" />
-                                </div>
-                            </div> */}
                             <div className="register-btn-field">
-                                <div onClick={() => handleSubmit(onSubmit)()} className='register-btn'> Register <AiOutlineArrowRight /> </div>
+                                <div onClick={() => handleSubmit(onSubmit)()} className='register-btn'> Registrar <AiOutlineArrowRight /> </div>
                             </div>
                             <div className='have-account'>
-                                Already have a account? <span onClick={() => { navigate('/') }}>Login</span>
+                                Já possui uma conta? <span onClick={() => { navigate('/') }}>Login</span>
                             </div>
                         </motion.div>
                     </AnimatePresence>

@@ -6,6 +6,11 @@ import { VscError } from "react-icons/vsc";
 import { MdErrorOutline } from "react-icons/md";
 import { HiOutlineMail } from "react-icons/hi";
 
+// TODO: Change language to pt-br
+// TODO: Remove unused libs
+// TODO: Remove unused functions / constants
+// TODO: Remove console.log
+
 const Dialog = ({ open, text, toggleDialog, color, icon }) => {
     return (
         <>

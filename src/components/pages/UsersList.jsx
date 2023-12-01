@@ -22,28 +22,18 @@ import TrashIcon from '../TrashIcon'
 import CircularProgress from '@mui/material/CircularProgress';
 import ModalPattern from '../ModalPattern'
 
-//
-
 import '../../styles/components/user-list.sass'
 
 import createAxiosInstance from '../../settings/AxiosSettings';
 import { Context } from '../../context/AuthContext';
 
-
-
-// const getApi = async () =>{
-//   await axios.get('https://api.alrtcc.com/users/?format=json')
-//     .then(res => {
-//       console.log(res);
-//     })
-//     .catch(err => console.log(err))
-//     .finally(() => {
-//     })
-// }
+// TODO: Change language to pt-br
+// TODO: Remove unused libs
+// TODO: Remove unused functions / constants
 
 const UsersList = () => {
 
-  const { token, actualUser } = useContext(Context)
+  const { actualUser } = useContext(Context)
   const apiALR = createAxiosInstance(actualUser.key)
 
   const [modal, setModal] = useState({
@@ -61,7 +51,7 @@ const UsersList = () => {
         setIsLoading(false)
 
       } catch (error) {
-        console.log(error)
+        setModal((prev) => ({ ...prev, isShow: true, textTitle: 'Ocorreu um erro!', textBody: 'Não foi possível carregar os usuários' }))
         setIsLoading(false)
 
       }
@@ -108,10 +98,12 @@ const UsersList = () => {
       formData.append('enterprise', parseInt(actualUser.enterprise))
 
       await apiALR.post('https://api.alrtcc.com/register/', formData)
-        .then(res => console.log(res))
+        .then(() => {
+          setModal((prev) => ({ ...prev, isShow: true, textTitle: 'Sucesso!', textBody: 'Usuário convidado!' }))
+        })
         .catch((err) => {
           if (err?.response?.data?.message == "Email já cadastrado") {
-            setModal((prev) => ({ ...prev, isShow: true, textTitle: 'Error!', textBody: 'E-mail already exists' }))
+            setModal((prev) => ({ ...prev, isShow: true, textTitle: 'Ocorreu um erro!', textBody: 'E-mail já existe' }))
           }
         })
         .finally(() => {
@@ -121,10 +113,10 @@ const UsersList = () => {
       await apiALR.get(`https://api.alrtcc.com/users/${actualUser.enterprise}/`)
         .then(res => setRows(res.data))
         .catch((error) => {
-          setModal((prev) => ({ ...prev, isShow: true, textTitle: 'Error!', textBody: 'Cannot Load users' }))
+          setModal((prev) => ({ ...prev, isShow: true, textTitle: 'Ocorreu um erro!', textBody: 'Não foi possível carregar os usuários' }))
         })
     } else {
-      setModal((prev) => ({ ...prev, isShow: true, textTitle: 'Error!', textBody: 'Empty Fields!' }))
+      setModal((prev) => ({ ...prev, isShow: true, textTitle: 'Não foi possível!', textBody: 'Campos vazios!' }))
     }
   }
 
@@ -136,12 +128,12 @@ const UsersList = () => {
   const handleDeleteUser = async (id) => {
     setIsLoading(true)
     await apiALR.delete('https://api.alrtcc.com/user/' + id)
-      .then(() => setModal((prev) => ({ ...prev, isShow: true, textTitle: 'Success!', textBody: 'Deleted!' })))
-      .catch(err => console.log(err))
+      .then(() => setModal((prev) => ({ ...prev, isShow: true, textTitle: 'Sucesso!', textBody: 'Deletado!' })))
+      .catch(() => setModal((prev) => ({ ...prev, isShow: true, textTitle: 'Ocorreu em erro!', textBody: 'Não foi possível deletar o usuário.' })))
       .finally(() =>
         setIsLoading(false)
       )
-    const res = await apiALR.get(`https://api.alrtcc.com/users/${actualUser.enterprise}`);
+    const res = await apiALR.get(`https://api.alrtcc.com/users/${actualUser.enterprise}/`);
     setRows(res.data)
 
   }
@@ -169,26 +161,16 @@ const UsersList = () => {
       <Navbar />
       <div className='d-flex flex-1'>
         <LeftMenu />
-        {/* <div className='flex-1 d-flex justify-content-center align-items-center'>
-          <div className='fields-add-user'>
-            <div className="form-group">
-              <label className='text-center w-100 mb-1' htmlFor="emailUser">Email</label>
-              <input type="text" id='emailUser' className="form-control input-email-add-user mb-2" />
-            </div>
-            <button className="btn btn-primary w-100">Invite User</button>
-          </div>
-        </div> */}
-
         <TableContainer style={{ marginTop: '8vh', marginLeft: '15vw' }} component={Paper}>
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>
               <TableRow>
-                <TableCell align="center">Image</TableCell>
-                <TableCell align="center">Name</TableCell>
+                <TableCell align="center">Imagem</TableCell>
+                <TableCell align="center">Nome</TableCell>
                 <TableCell align="center">E-mail</TableCell>
-                <TableCell align="center">Position</TableCell>
+                <TableCell align="center">Cargo</TableCell>
                 <TableCell align="center">Status</TableCell>
-                {actualUser.cargo == 'Administrador' && <TableCell align="center">Actions</TableCell>}
+                {actualUser.cargo == 'Administrador' && <TableCell align="center">Ações</TableCell>}
 
               </TableRow>
             </TableHead>
@@ -199,14 +181,14 @@ const UsersList = () => {
                 <TableRow
                   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                 >
-                  <TableCell align="center"><input onChange={handleFileChange} type="file" accept='image/jpeg, image/png' className='form-control' /></TableCell>
+                  <TableCell align="center"><input onChange={handleFileChange} type="file" accept='image/*' className='form-control' /></TableCell>
                   <TableCell><input maxLength={22} value={user.name} onChange={handleChange} name='name' className='form-control text-center' type="text" /></TableCell>
                   <TableCell align="center"><input onChange={handleChange} value={user.email} name='email' className='form-control text-center' type="text" /></TableCell>
                   <TableCell align="center">
                     <select onChange={handleChange} value={user.position} className='form-select' name="position" id="position">
-                      <option value="default">Select a Position</option>
-                      <option value="Colaborador">Collaborator</option>
-                      <option value="Administrador">Administrator</option>
+                      <option value="default">Selecione um cargo</option>
+                      <option value="Colaborador">Colaborador</option>
+                      <option value="Administrador">Administrador</option>
                     </select>
                   </TableCell>
                   <TableCell align="center">--</TableCell>
@@ -227,19 +209,17 @@ const UsersList = () => {
                     <TableCell align="center">{row.email}</TableCell>
                     <TableCell align="center">{row.cargo}</TableCell>
                     <TableCell align="center">
-                      {row.status == false ? <LiaClockSolid fontSize={20} title='Invited' color='orange' /> : <AiOutlineCheck fontSize={20} title='Accepted' color='green' />}
+                      {row.status == false ? <LiaClockSolid fontSize={20} title='Convidado' color='orange' /> : <AiOutlineCheck fontSize={20} title='Aceito' color='green' />}
                     </TableCell>
                     {(row.id != actualUser.id && !row.teenant) && <TableCell align="center"><TrashIcon uuid={row.id} handleClick={() => handleDeleteUser(row.id)} /></TableCell>}
                   </TableRow>
                 )
               }
-
               )}
             </TableBody>
           </Table>
         </TableContainer>
       </div>
-      {/* <Footer /> */}
     </>
   )
 }

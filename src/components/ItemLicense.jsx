@@ -1,4 +1,13 @@
-import React, { useState } from 'react'
+import React from 'react'
+
+
+const licenseTypeStatus = (status) =>{
+    switch(status){
+        case 'item-expired': return 'expirada'
+        case 'item-expiring': return 'expirando'
+        case 'item-active': return 'ativa'
+    }
+}
 
 const ItemLicense = ({ list, status }) => {
     if(list.length > 0){
@@ -10,10 +19,10 @@ const ItemLicense = ({ list, status }) => {
                         <div className={'item-license ' + status} key={el.id}>
                             <div className="row text-align-center width-100">
                                 <div className="col-sm">
-                                    {el.serial_key}
+                                    {el.serial_key ? el.serial_key : '--'}
                                 </div>
                                 <div className="col-sm">
-                                    {el.invoice_number}
+                                    {el.invoice_number ? el.invoice_number : '--'}
                                 </div>
                                 <div className="col-sm">
                                     {el.name}
@@ -36,7 +45,7 @@ const ItemLicense = ({ list, status }) => {
         return (
             <div className={'item-license ' + status}>
                 <div className="row justify-content-center text-align-center width-100">
-                    Licenses Not found
+                    Não existe nenhuma licença {licenseTypeStatus(status)}
                 </div>
             </div>
         )

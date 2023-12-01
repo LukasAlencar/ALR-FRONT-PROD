@@ -17,6 +17,11 @@ import { Navigate, useNavigate } from 'react-router-dom'
 import { CircularProgress } from '@mui/material'
 import ModalPattern from './ModalPattern'
 
+// TODO: Change language to pt-br
+// TODO: Remove unused libs
+// TODO: Remove unused functions / constants
+// TODO: Remove console.log
+
 function MyProfilePage() {
   const navigate = useNavigate()
   const { actualUser, token, getApi } = useContext(Context)
