@@ -47,11 +47,11 @@ const Navbar = () => {
                         <MediaQuery maxWidth={991}>
                             <li className="nav-item">
                                 <Link to="/my-profile">
-                                    <span onClick={() => { setPage('profile') }} className={page == 'profile' ? 'nav-link active d-flex align-items-center' : 'nav-link d-flex align-items-center'} href=""><IoPersonOutline/> My Profile</span>
+                                    <span onClick={() => { setPage('profile') }} className={page == 'profile' ? 'nav-link active d-flex align-items-center' : 'nav-link d-flex align-items-center'} href=""><IoPersonOutline/> Meu Perfil</span>
                                 </Link>
                             </li>
                             <li className="nav-item">
-                                <span onClick={handleLogout} className="exit nav-link cursor-pointer d-flex align-items-center"><span className='iconExit'><IoExitOutline /></span> Exit</span>
+                                <span onClick={handleLogout} className="exit nav-link cursor-pointer d-flex align-items-center"><span className='iconExit'><IoExitOutline /></span> Sair</span>
                             </li>
 
                         </MediaQuery>
@@ -71,12 +71,12 @@ const Navbar = () => {
                                     <li><hr className="dropdown-divider" /></li>
                                     <li>
                                         <Link to="/my-profile">
-                                            <span onClick={() => { setPage('profile') }} className={page == 'profile' ? 'dropdown-item active d-flex align-items-center gap-2' : 'dropdown-item d-flex align-items-center gap-2'} href="#"><IoPersonOutline/> My Profile</span>
+                                            <span onClick={() => { setPage('profile') }} className={page == 'profile' ? 'dropdown-item active d-flex align-items-center gap-2' : 'dropdown-item d-flex align-items-center gap-2'} href="#"><IoPersonOutline/> Meu Perfil</span>
                                         </Link>
                                     </li>
                                     <li><hr className="dropdown-divider" /></li>
                                     <li>
-                                        <span onClick={handleLogout} className="exit dropdown-item cursor-pointer d-flex align-items-center gap-2" ><span className='iconExit'><IoExitOutline /></span> Exit </span>
+                                        <span onClick={handleLogout} className="exit dropdown-item cursor-pointer d-flex align-items-center gap-2" ><span className='iconExit'><IoExitOutline /></span> Sair </span>
                                     </li>
                                 </ul>
                             </li>

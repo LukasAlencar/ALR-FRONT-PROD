@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from "react";
 import { Context } from "../context/AuthContext";
-import PageLogin from "./PageLogin";
 import { useNavigate } from "react-router-dom";
 
 function PrivateRoute({ children }) {
@@ -21,7 +20,7 @@ function PrivateRoute({ children }) {
     }, [])
 
     if (loading) {
-        return <h1>Loading...</h1>
+        return <h1>Carregando...</h1>
     }
     return children
 }

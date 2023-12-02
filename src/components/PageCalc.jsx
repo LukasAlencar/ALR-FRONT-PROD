@@ -20,7 +20,7 @@ const PageCalc = () => {
     const [modal, setModal] = useState({
         isShow: false,
         textTitle: <div className='d-flex align-items-center'>
-            Loading <CircularProgress style={{ fontSize: 'none', width: 15, height: 15, marginLeft: 10 }} />
+            Carregando <CircularProgress style={{ fontSize: 'none', width: 15, height: 15, marginLeft: 10 }} />
         </div>,
         textBody: <>
             <div>

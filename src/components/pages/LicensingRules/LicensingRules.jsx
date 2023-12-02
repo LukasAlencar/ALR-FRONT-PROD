@@ -5,13 +5,8 @@ import GridPattern from '../../GridPattern'
 import axios from 'axios'
 import ModalPattern from '../../ModalPattern'
 import CircularProgress from '@mui/material/CircularProgress';
-import { LiaFileContractSolid } from 'react-icons/lia'
 
 // TODO: Change language to pt-br
-// TODO: Remove unused libs
-// TODO: Remove unused functions / constants
-// TODO: Remove console.log
-
 
 const LicensingRules = () => {
 
@@ -27,11 +22,19 @@ const LicensingRules = () => {
         (async () => {
             await axios.get('https://api.alrtcc.com/documents/')
                 .then(res => {
-                    setListBodyItems(res.data)
-                    console.log(res.data)
+                    let dados = res.data
+
+                    const dadosModificados = dados.map(obj => ({
+                        id: obj.id,
+                        Título: obj.title,
+                        Arquivo: obj.file,
+                        manufacturer: obj.manufacturer,
+                    }));
+
+                    setListBodyItems(dadosModificados)
                 })
                 .catch(() =>
-                    setModal((prev) => ({ ...prev, isShow: true, textTitle: <span className='error'>Error!</span>, textBody: <>Failed To Loading Licensing Rules, try again later</> }))
+                    setModal((prev) => ({ ...prev, isShow: true, textTitle: <span className='error'>Ocorreu um erro!</span>, textBody: <>Não foi possível carregar as regras de licenciamento, tente novamente mais tarde!</> }))
                 )
                 .finally(() => {
                     setIsLoading(false)
@@ -51,8 +54,8 @@ const LicensingRules = () => {
     }
 
     const listHeaderItems = [
-        { itemName: 'title', align: 'center', fileField: { is: false, accept: '' }, editField: { is: false }, },
-        { itemName: 'file', align: 'center', fileField: { is: false, accept: '' }, editField: { is: false }, downloadIcon: true, downloadFunction: () => { downloadFile } },
+        { itemName: 'Título', align: 'center', fileField: { is: false, accept: '' }, editField: { is: false }, },
+        { itemName: 'Arquivo', align: 'center', fileField: { is: false, accept: '' }, editField: { is: false }, downloadIcon: true, downloadFunction: () => { downloadFile } },
     ]
 
     if (isLoading) {

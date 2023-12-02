@@ -7,24 +7,19 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import Divider from '@mui/material/Divider';
 import ListItemText from '@mui/material/ListItemText';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
-import { HiOutlinePencilSquare } from 'react-icons/hi2'
 import InputEdit from './InputEdit'
 import createAxiosInstance from '../settings/AxiosSettings'
-import { Navigate, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { CircularProgress } from '@mui/material'
 import ModalPattern from './ModalPattern'
 
 // TODO: Change language to pt-br
-// TODO: Remove unused libs
-// TODO: Remove unused functions / constants
 // TODO: Remove console.log
 
 function MyProfilePage() {
   const navigate = useNavigate()
-  const { actualUser, token, getApi } = useContext(Context)
+  const { actualUser, getApi } = useContext(Context)
   const apiALR = createAxiosInstance(actualUser.key)
   const [isLoading, setIsLoading] = useState(false)
 
@@ -44,13 +39,12 @@ function MyProfilePage() {
       let formData = new FormData();
       formData.append('name', data.input);
       apiALR.put(`/user/${actualUser.id}/`, formData)
-        .then((res) => {
-          console.log(res)
+        .then(() => {
           getApi()
         })
         .catch((err) => { console.log(err) })
     } else {
-      setModal((prev) => ({ ...prev, isShow: true, textTitle: 'Error!', textBody: 'Max Characteres lenght is 22!' }))
+      setModal((prev) => ({ ...prev, isShow: true, textTitle: 'Ocorreu um erro!', textBody: 'Máximo de caracteres possível: 22' }))
 
     }
   }
@@ -67,11 +61,10 @@ function MyProfilePage() {
       })
       .catch((err) => { console.log(err) })
     }else {
-      setModal((prev) => ({ ...prev, isShow: true, textTitle: 'Error!', textBody: 'Password must have a minimum of 8 characters, at least 1 uppercase character, and at least 1 special character.' }))
+      setModal((prev) => ({ ...prev, isShow: true, textTitle: 'Ocorreu um erro!', textBody: 'A senha deve ter: ao menos 8 caracteres, 1 caractere especial e 1 caractere maiúsculo' }))
 
     }
   }
-
 
   const handleDeleteAccount = () => {
     setModal((prev) => ({
@@ -102,7 +95,6 @@ function MyProfilePage() {
       .finally(() =>
         setIsLoading(false)
       )
-
   }
 
   if (isLoading) {
@@ -159,7 +151,7 @@ function MyProfilePage() {
                       variant="body2"
                       color="text.primary"
                     >
-                      Full Name:
+                      Nome:
                     </Typography>
                     <InputEdit onSubmit={handleEditName} valueDefault={actualUser.name.charAt(0).toUpperCase() + actualUser.name.slice(1)} typeInput={'text'} />
                   </>
@@ -202,7 +194,7 @@ function MyProfilePage() {
                       variant="body2"
                       color="text.primary"
                     >
-                      Password
+                      Senha:
                     </Typography>
                     <InputEdit valueDefault={"********"} onSubmit={handleEditPassword} typeInput={"password"} />
                   </>

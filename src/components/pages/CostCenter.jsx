@@ -34,9 +34,6 @@ const CostCenter = () => {
 
     }
 
-    useEffect(()=>{
-    },[])
-
     const handleRemoveCostCenter = (id) => {
         console.log(id)
     }
