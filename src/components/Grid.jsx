@@ -78,13 +78,6 @@ const GridComponent = () => {
             let invoice_number = listAdd.invoice_number
             let serial_key = listAdd.serial_key
 
-            if (invoice_number == '' || invoice_number == undefined || invoice_number == null) {
-                invoice_number = 'NaN'
-            }
-            if (serial_key == '' || serial_key == undefined || serial_key == null) {
-                serial_key = 'NaN'
-            }
-
             if (listAdd.activateDate > listAdd.expirationDate) {
                 setModal((prev) => ({ ...prev, isShow: true, textTitle: <span className='error'>Ocorreu um erro!</span>, textBody: <>A <span style={{ fontWeight: 'bold' }}>Data de Ativação</span> não pode ser maior do que a <span style={{ fontWeight: 'bold' }}>Data de expiração</span></> }))
                 return false
@@ -206,9 +199,9 @@ const GridComponent = () => {
                     <TableHead>
                         <TableRow>
                             <TableCell align="center">Contrato <span style={{ fontSize: 12, color: 'gray' }}>PDF</span></TableCell>
-                            <TableCell align="center">Produto</TableCell>
-                            <TableCell align="center">Data de Ativação</TableCell>
-                            <TableCell align="center">Data de Expiração</TableCell>
+                            <TableCell align="center">Produto *</TableCell>
+                            <TableCell align="center">Data de Ativação *</TableCell>
+                            <TableCell align="center">Data de Expiração *</TableCell>
                             <TableCell align="center">Número da Invoice</TableCell>
                             <TableCell align="center">Chave Serial</TableCell>
                             <TableCell align="center">Ações</TableCell>
@@ -219,6 +212,7 @@ const GridComponent = () => {
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                         >
                             <TableCell className='d-flex align-items-center' align="center">
+
                                 <label title={listAdd?.contract?.name ? listAdd.contract.name : 'Escolha um arquivo'} className='labelInputContract' htmlFor="fileContract">{listAdd?.contract?.name ? listAdd.contract.name : 'Escolha um arquivo'}</label>
                                 <input ref={contractInputRef} onChange={handleFileChange} id="fileContract" type="file" accept='application/pdf' className='inputFileContract' />
                             </TableCell>

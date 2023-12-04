@@ -8,6 +8,8 @@ import { useContext, useEffect, useState } from 'react'
 import { Context } from '../context/AuthContext'
 import createAxiosInstance from '../settings/AxiosSettings'
 import { IoPersonOutline } from "react-icons/io5";
+import PersonDefault from '../img/person.jpg'
+
 
 // TODO: Change language to pt-br
 // TODO: Remove unused libs
@@ -61,7 +63,7 @@ const Navbar = () => {
                             <li className="nav-item dropdown">
                                 <div className="iconUser d-flex align-items-center nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     {/* <FiUser/> */}
-                                    <img src={actualUser.img_user} style={{ width: 35, height: 35 }} alt="" />
+                                    <img src={actualUser.img_user ? actualUser.img_user : PersonDefault} style={{ width: 35, height: 35 }} alt="" />
                                 </div>
                                 <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
                                     <li className='text-center'>

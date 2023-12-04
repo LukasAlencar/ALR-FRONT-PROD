@@ -35,7 +35,7 @@ const LeftMenu = () => {
           </ItemSidebar> */}
             <ItemSidebar linkTo='view-owners' icon={<AiOutlineShop />} itemName="Fabricantes">
             </ItemSidebar>
-            <ItemSidebar linkTo='view-licensing-rules' icon={<IoDocumentLockOutline style={{ fontSize: 35 }} />} itemName="Regras de Licenciamento">
+            <ItemSidebar linkTo='view-licensing-rules' icon={<IoDocumentLockOutline style={{ fontSize: '30px' }} />} itemName="Regras de Licenciamento">
             </ItemSidebar>
             {/* <ItemSidebar linkTo='calculator' itemName="Calculator">
           </ItemSidebar> */}

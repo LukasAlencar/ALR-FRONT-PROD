@@ -91,9 +91,13 @@ const PageLogin = () => {
                 toggleModal={() => setModal(!modal)}
                 open={modal}
                 textTitle={'Usuário não cadastrado.'}
-                textBody={'Tente novamente'}
+                textBody={'Tente novamente, ou crie um usuário'}
                 textBtn1={'Ok'}
+                textBtn2={'Cadastrar usuário'}
                 handleClick1={() => setModal(false)}
+                handleClick2={() => navigate('/register')}
+                btn2Variant={'contained'}
+
             />
             {isLoading && <>
                 <div className='mask' />

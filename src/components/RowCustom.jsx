@@ -7,6 +7,7 @@ import { AiOutlineCheck } from 'react-icons/ai'
 import { HiXMark, HiOutlinePencilSquare } from 'react-icons/hi2'
 import ModalPattern from './ModalPattern'
 import { Context } from '../context/AuthContext'
+import { LuFileWarning } from "react-icons/lu";
 
 const RowCustom = ({ datas, handleRemoveLicense, setIsLoading, setLicensesList, products }) => {
 
@@ -39,7 +40,6 @@ const RowCustom = ({ datas, handleRemoveLicense, setIsLoading, setLicensesList, 
             expirationDate: '',
             invoice_number: '',
             serial_key: '',
-
         }
     )
 
@@ -54,8 +54,8 @@ const RowCustom = ({ datas, handleRemoveLicense, setIsLoading, setLicensesList, 
     }
 
     const handleSaveLicense = async () => {
-        
-        if (listAdd.product && listAdd.activateDate && listAdd.expirationDate && listAdd.product != 'default' && listAdd.invoice_number && listAdd.serial_key) {
+
+        if (listAdd.product && listAdd.activateDate && listAdd.expirationDate && listAdd.product != 'default') {
             if (listAdd.activateDate > listAdd.expirationDate) {
                 setModal((prev) => ({ ...prev, isShow: true, textTitle: <span className='error'>Ocorreu um erro!</span>, textBody: <>A <span style={{ fontWeight: 'bold' }}>Data de Ativação</span> não pode ser maior do que a <span style={{ fontWeight: 'bold' }}>Data de Expiração.</span></> }))
                 return false
@@ -130,7 +130,10 @@ const RowCustom = ({ datas, handleRemoveLicense, setIsLoading, setLicensesList, 
                 <TableRow
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                 >
-                    <TableCell align="center"><input onChange={handleFileChange} type="file" accept='application/pdf' className='form-control' /></TableCell>
+                    <TableCell align="center">
+                        <label htmlFor={`file-${datas.id}`} title={listAdd?.contract?.name ? listAdd.contract.name : 'Escolha um arquivo'} className='labelInputContract'>{listAdd?.contract?.name ? listAdd.contract.name : 'Escolha um arquivo'}</label>
+                        <input id={`file-${datas.id}`} onChange={handleFileChange} type="file" accept='application/pdf' className='inputFileContract' />
+                    </TableCell>
                     <TableCell>
                         <select value={listAdd.product} onChange={handleChange} name='product' className='form-select text-center' >
                             <option disabled value="default">Selecione um produto</option>
@@ -168,7 +171,7 @@ const RowCustom = ({ datas, handleRemoveLicense, setIsLoading, setLicensesList, 
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                 >
                     <TableCell align='center'>
-                        {datas.file ? <LiaFileContractSolid fontSize={30} title='Baixar licença' className='link' onClick={() => downloadContract(datas.file)} /> : '--'}
+                        {datas.file ? <LiaFileContractSolid fontSize={35} title='Baixar licença' className='link' onClick={() => downloadContract(datas.file)} /> : <LuFileWarning className='link-error' fontSize={30} title='Contrato não adicionado' />}
                     </TableCell>
                     <TableCell align="center">
                         {datas.name}

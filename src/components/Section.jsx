@@ -54,7 +54,60 @@ const Section = () => {
         return (
             <>
                 <div className='section-container'>
-                    <div ref={componentPDF} className="section-list">
+                    <div style={{ display: 'none' }}>
+                        <div
+                            ref={componentPDF}
+                            className="section-list"
+                            style={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                padding: '20px',
+                                border: '1px solid #000',
+                            }}
+                        >
+                            <div className="section-list">
+                                {list.length > 0 ?
+                                    <>
+                                        <div className="header-section">
+                                            <ul className='ul-header-section'>
+                                                <div className="row text-align-center width-100 font-tertiary">
+                                                    <div className="col-sm">
+                                                        Chave Serial
+                                                    </div>
+                                                    <div className="col-sm">
+                                                        Número da Invoice
+                                                    </div>
+                                                    <div className="col-sm">
+                                                        Produto
+                                                    </div>
+                                                    <div className="col-sm">
+                                                        Data de ativação
+                                                    </div>
+                                                    <div className="col-sm">
+                                                        Data de Expiração
+                                                    </div>
+                                                </div>
+                                            </ul>
+                                        </div>
+                                        <div className='divider'></div>
+                                        <div >
+                                            <ListLicenses datas={list} />
+                                        </div>
+
+                                    </>
+                                    :
+                                    <>
+                                        <div className='text-center font-tertiary'>
+                                            Você não possui nenhuma licença. <span style={{ color: 'blue', fontSize: 15 }} onClick={() => navigate('/create-contract')} className='link'>Criar licença!</span>
+                                        </div>
+                                        <div className='divider'></div>
+                                    </>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div className="section-list">
                         {list.length > 0 ?
                             <>
                                 <div className="header-section">
@@ -93,7 +146,7 @@ const Section = () => {
                             </>
                         }
                     </div>
-                </div>
+                </div >
                 {list.length > 0 && <button className='pdf-button' onClick={generatePDF}><FaRegFilePdf /></button>}
 
             </>

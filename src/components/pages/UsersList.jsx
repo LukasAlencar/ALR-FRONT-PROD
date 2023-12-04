@@ -27,6 +27,8 @@ import '../../styles/components/user-list.sass'
 import createAxiosInstance from '../../settings/AxiosSettings';
 import { Context } from '../../context/AuthContext';
 
+import PersonDefault from '../../img/person.jpg'
+
 // TODO: Change language to pt-br
 // TODO: Remove unused libs
 // TODO: Remove unused functions / constants
@@ -85,7 +87,7 @@ const UsersList = () => {
   }
 
   const handleAddUser = async () => {
-    if (user.name && user.email && user.img_user && user.position && user.position != 'default') {
+    if (user.name && user.email && user.position && user.position != 'default') {
 
       setIsLoading(true)
       let passAleatorio = generateRandomString(10)
@@ -102,6 +104,7 @@ const UsersList = () => {
           setModal((prev) => ({ ...prev, isShow: true, textTitle: 'Sucesso!', textBody: 'Usuário convidado!' }))
         })
         .catch((err) => {
+          console.log(err)
           if (err?.response?.data?.message == "Email já cadastrado") {
             setModal((prev) => ({ ...prev, isShow: true, textTitle: 'Ocorreu um erro!', textBody: 'E-mail já existe' }))
           }
@@ -201,7 +204,15 @@ const UsersList = () => {
                     key={row.id}
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                   >
-                    <TableCell align='center'><img className='user-img-table' src={row.img_user} alt="" /></TableCell>
+                    <TableCell align='center'>
+
+                      {
+                        row.img_user ? 
+                        <img className='user-img-table' src={row.img_user} alt="" />
+                          :
+                        <img className='user-img-table' src={PersonDefault} alt="" />
+                      }
+                    </TableCell>
                     <TableCell align="center">
                       {row.name}
                     </TableCell>

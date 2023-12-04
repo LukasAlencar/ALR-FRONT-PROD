@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useRef, useState } from 'react'
 import LeftMenu from './LeftMenu'
 import Navbar from './Navbar'
 import '../styles/components/my-profile.sass'
@@ -13,21 +13,27 @@ import createAxiosInstance from '../settings/AxiosSettings'
 import { useNavigate } from 'react-router-dom'
 import { CircularProgress } from '@mui/material'
 import ModalPattern from './ModalPattern'
+import { HiOutlinePencilSquare } from 'react-icons/hi2'
+import { AnimatePresence, motion } from 'framer-motion'
+import PersonDefault from '../img/person.jpg'
 
-// TODO: Change language to pt-br
-// TODO: Remove console.log
 
 function MyProfilePage() {
   const navigate = useNavigate()
   const { actualUser, getApi } = useContext(Context)
   const apiALR = createAxiosInstance(actualUser.key)
   const [isLoading, setIsLoading] = useState(false)
+  const [pencilShow, setPencilShow] = useState(false)
+  const [photo, setPhoto] = useState(actualUser.img_user ? actualUser.img_user : PersonDefault)
 
   const [modal, setModal] = useState({
     isShow: false,
     textTitle: '',
     textBody: '',
   })
+
+
+  const user_img = useRef()
 
   const calcFontSize = () => {
     const fontSize = Math.max(15, Math.min(25, 35 - actualUser.name.length));
@@ -42,7 +48,9 @@ function MyProfilePage() {
         .then(() => {
           getApi()
         })
-        .catch((err) => { console.log(err) })
+        .catch(() => {
+          setModal((prev) => ({ ...prev, isShow: true, textTitle: 'Ocorreu um erro!', textBody: 'Não foi possível alterar o nome, tente novamente mais tarde' }))
+        })
     } else {
       setModal((prev) => ({ ...prev, isShow: true, textTitle: 'Ocorreu um erro!', textBody: 'Máximo de caracteres possível: 22' }))
 
@@ -50,17 +58,18 @@ function MyProfilePage() {
   }
   const handleEditPassword = (data) => {
     let patternPass = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(.{8,})$/
-    if(patternPass.test(data.input)){
+    if (patternPass.test(data.input)) {
 
       let formData = new FormData();
       formData.append('password', data.input);
       apiALR.put(`/user/${actualUser.id}/`, formData)
-      .then((res) => {
-        console.log(res)
-        getApi()
-      })
-      .catch((err) => { console.log(err) })
-    }else {
+        .then(() => {
+          getApi()
+        })
+        .catch((err) => {
+          setModal((prev) => ({ ...prev, isShow: true, textTitle: 'Ocorreu um erro!', textBody: 'Não foi possível alterar a senha, tente novamente mais tarde' }))
+        })
+    } else {
       setModal((prev) => ({ ...prev, isShow: true, textTitle: 'Ocorreu um erro!', textBody: 'A senha deve ter: ao menos 8 caracteres, 1 caractere especial e 1 caractere maiúsculo' }))
 
     }
@@ -70,13 +79,13 @@ function MyProfilePage() {
     setModal((prev) => ({
       ...prev,
       isShow: true,
-      textTitle: <span className='error'>Are you sure?!</span>,
+      textTitle: <span className='error'>Tem certeza?!</span>,
       textBtn1: 'CANCEL',
       textBody:
         <>
-          Are you sure to delete <span style={{ fontWeight: 'bold' }}>YOUR ACCOUNT?</span>
+          Tem certeza que deseja deletar <span style={{ fontWeight: 'bold' }}>SUA CONTA?</span>
           <br />
-          <span style={{ color: 'gray', fontSize: 13 }}>* This cannot be undone.</span>
+          <span style={{ color: 'gray', fontSize: 13 }}>* Isso não pode ser desfeito.</span>
 
         </>,
       textBtn2: 'DELETE',
@@ -91,10 +100,50 @@ function MyProfilePage() {
       .then(() => {
         navigate('/')
       })
-      .catch(err => console.log(err))
+      .catch(() => {
+        setModal((prev) => ({ ...prev, handleClick1: closeModal, isShow: true, textTitle: <span className='font-tertiary'>Ocorreu um erro!</span>, textBody: 'Não foi possível deletar o usuário, tente novamente mais tarde!' }))
+      })
       .finally(() =>
         setIsLoading(false)
       )
+  }
+
+  const closeModal = () => {
+    setModal((prev) => ({ ...prev, isShow: false }))
+  }
+
+  const handleConfirmChange = (file) => {
+    setModal((prev) => ({ ...prev, isShow: false }))
+
+    setIsLoading(true)
+    let formData = new FormData()
+    formData.append('img_user', file)
+
+    apiALR.put(`user/${actualUser.id}/`, formData)
+      .then(() => {
+        getApi()
+      })
+      .catch(() => {
+        setModal((prev) => ({ ...prev, handleClick1: closeModal, isShow: true, textTitle: <span className='font-tertiary'>Ocorreu um erro!</span>, textBody: 'Não foi possível alterar a sua imagem, tente novamente mais tarde!' }))
+      })
+      .finally(() => setIsLoading(false));
+
+    if (user_img.current) {
+      user_img.current.value = '';
+    }
+  }
+
+  const handleImageChange = (e) => {
+    const { files } = e.target
+    const file = files[0]
+    debugger
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setModal((prev) => ({ ...prev, handleClick1: () => handleConfirmChange(file), isShow: true, textTitle: <span className='font-tertiary'>Deseja alterar sua imagem?</span>, textBody: <img src={reader.result} /> }))
+      };
+      reader.readAsDataURL(file);
+    }
   }
 
   if (isLoading) {
@@ -116,15 +165,36 @@ function MyProfilePage() {
         textBtn2={modal.textBtn2}
         handleClick2={modal.handleClick2}
         colorBtn2={'error'}
-        handleClick1={() => setModal((prev) => ({ ...prev, isShow: false }))}
+        handleClick1={modal.handleClick1 ? modal.handleClick1 : () => setModal((prev) => ({ ...prev, isShow: false }))}
       />
       <div className='bg'></div>
       <LeftMenu />
       <Navbar />
       <div style={{ marginTop: '8vh', marginLeft: '15vw' }} className='section-list-user'>
         <div className="card-left-user card-user">
-          <div className="user-img">
-            <img className='img-user-my-profile' src={actualUser.img_user} alt="" />
+          <div className="user-img w-100">
+            <div onMouseEnter={() => setPencilShow(true)} onMouseLeave={() => setPencilShow(false)} style={{ backgroundImage: `url(${photo})` }} className="img-user-my-profile-bg">
+              <AnimatePresence>
+
+                <motion.div
+                  style={{ zIndex: 2, width: '100%', height: '100%', }}
+                  className={(!pencilShow ? `d-none` : 'd-flex') + ' justify-content-center'}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: .1 }}
+                  key={'Pencil'}
+                  exit={{
+                    opacity: 0,
+                    transition: { duration: .1, },
+                  }}
+                >
+                  <label htmlFor='img_user' title={'Escolha um arquivo'} className='labelInputContract input-pencil d-flex w-100 justify-content-center align-items-center'><HiOutlinePencilSquare /></label>
+                  <input ref={user_img} id='img_user' onChange={handleImageChange} type="file" accept='image/*' className='inputFileContract' />
+                </motion.div>
+
+              </AnimatePresence>
+            </div>
+            {/* <img className='img-user-my-profile' src={actualUser.img_user} alt="" /> */}
           </div>
           <div className={'name-user'} style={{ fontSize: calcFontSize() }}>
             {actualUser.name.charAt(0).toUpperCase() + actualUser.name.slice(1)}
@@ -217,7 +287,7 @@ function MyProfilePage() {
                     className='delete-account-link'
                     onClick={() => { handleDeleteAccount(actualUser.id) }}
                   >
-                    Delete Account
+                    Deletar conta
                   </Typography>
                 </ListItem>
               </>
