@@ -120,7 +120,7 @@ const PageRegister = () => {
                                         {...register("user_img", {
                                             validate: (value) => {
                                                 debugger
-                                                let acceptedFormats = ['png', 'jpg', 'jpeg', 'gif'];
+                                                let acceptedFormats = ['png', 'jpg', 'jpeg', 'gif', undefined];
                                                 let fileExtension = value[0]?.name.split('.').pop().toLowerCase();
                                                 if (!acceptedFormats.includes(fileExtension)) {
                                                     return 'Formato inválido';
@@ -207,7 +207,7 @@ const PageRegister = () => {
                                                 required: true,
                                                 pattern: {
                                                     value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/,
-                                                    message: 'Invalid email format'
+                                                    message: 'Email inválido'
                                                 },
                                             })
                                         }
